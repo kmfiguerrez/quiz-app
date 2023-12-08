@@ -9,26 +9,34 @@ import type { TChoice, TQuestion } from "@/utils/definition"
 // Custom Providers.
 import { useSelectedChoiceContext } from "@/context/choice-provider"
 
+// Custom SVG icons.
+import CheckIcon from "./svg/check-icon"
+import Xicon from "./svg/x-icon"
+
 
 
 type TQuestionProps = {
   question: TQuestion
 }
 
+type TQuestionStatus = 'answering' | 'checked'
+
 type TChoicesProp = {
   choices: Array<TChoice>
+  questionStatus: TQuestionStatus
 }
 
 type TChoiceProp = {
   choice: TChoice
   prefixSymbol: string
+  questionStatus: TQuestionStatus
 }
 
 
 const Question = ({ question }: TQuestionProps) => {    
   const {selectedChoice} = useSelectedChoiceContext()
   const [isCorrect, setIsCorrect] = useState(false)
-  const [status, setStatus] = useState<'answering' | 'checked'>('answering')
+  const [status, setStatus] = useState<TQuestionStatus>('answering')
   const [error, setError] = useState('')
   // console.log('Selected choice: ', selectedChoice)
   // console.log('Error: ', error)
@@ -72,18 +80,18 @@ const Question = ({ question }: TQuestionProps) => {
 
       {/* Display Question */}
       <div
-        className="border p-1 min-w-fit"
+        className="border p-1"
       >
-        <p className="">
+        <p className="mb-1">
           {question.question}
         </p>
-        <Choices choices={question.choices} />
+        <Choices choices={question.choices} questionStatus={status} />
       </div>
       
       {/* Check button */}
       <button
         onClick={() => {
-          // Reset the error first.
+          // Reset the error.
           setError('')
 
           // Reset status.
@@ -99,11 +107,11 @@ const Question = ({ question }: TQuestionProps) => {
 }
 
 
-const Choices = ({ choices }: TChoicesProp) => {
+const Choices = ({ choices, questionStatus }: TChoicesProp) => {
   return (
-    <div className="ps-3">
+    <div className="ps-1">
       {choices.map(choice => (
-          <Choice key={choice.prefixSymbol} prefixSymbol="" choice={choice} />
+          <Choice key={choice.prefixSymbol} questionStatus={questionStatus} prefixSymbol="" choice={choice} />
         ))
       }
     </div>  
@@ -111,14 +119,16 @@ const Choices = ({ choices }: TChoicesProp) => {
 }
 
 
-const Choice = ({ choice }: TChoiceProp) => {
+const Choice = ({ choice, questionStatus }: TChoiceProp) => {
   const {selectedChoice, dispatch} = useSelectedChoiceContext()
 
   return (
-    <button      
-      className={clsx("block",
+    <button
+      disabled={questionStatus === 'checked'}
+      className={clsx("flex mb-1 items-center",      
       {
-        "text-green-500" : selectedChoice?.prefixSymbol === choice.prefixSymbol
+        "text-green-500": questionStatus === "checked" && choice.isCorrect,
+        "text-red-400": questionStatus === "checked" && !choice.isCorrect
       }
       )}
       onClick={() => {
@@ -126,12 +136,26 @@ const Choice = ({ choice }: TChoiceProp) => {
         dispatch({type:"changed_selection", payload: choice})
       }}
     >
+
+      {/* Result symbol */}
+      {questionStatus === "checked" && choice.isCorrect &&
+        <CheckIcon />        
+      }
+
+      {questionStatus === "checked" && !choice.isCorrect &&
+        <Xicon />        
+      }
+
       {/* Prefix symbol */}
-      <span>{choice.prefixSymbol}</span>.
+      <span className="ms-1">{choice.prefixSymbol}</span>.      
       {/* Text */}
       <span className="ms-1">
         {choice.text}
       </span>
+      {selectedChoice?.prefixSymbol === choice.prefixSymbol &&
+        <span className="text-white"> - you selected</span>
+      }
+
     </button>
   )
 }
