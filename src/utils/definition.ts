@@ -1,7 +1,7 @@
 type TLetter = "a" | "b" | "c" | "d" | "e" | "f" | "g" | "f" | "h" | "i"
 
 type TChoice = {
-  prefixSymbol: TLetter,
+  prefixSymbol?: TLetter,
   text: string
   isCorrect: boolean
 }

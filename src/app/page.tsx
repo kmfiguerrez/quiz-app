@@ -1,11 +1,11 @@
-import Question from '@/components/question'
-import Image from 'next/image'
-import Questions from '@/utils/data'
+
+import Quiz from '@/components/quiz'
+
 
 export default function Home() {
   return (
-    <main className="">
-      <Question question={Questions[0]} />
+    <main className="container">
+      <Quiz />
     </main>
   )
 }
