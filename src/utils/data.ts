@@ -29,7 +29,9 @@ const Questions: TQuestions = [
         text: "None of the devices are using Ethernet.",
         isCorrect: false
       },
-    ],    
+    ],
+    type: "mc",
+    answers: 1    
   },
   {
     question: "Which of the folllowing Ethernet standards defines Gigabit "+
@@ -51,7 +53,9 @@ const Questions: TQuestions = [
         text: "None of the other answers is correct",
         isCorrect: false
       }
-    ]
+    ],
+    type: "mc",
+    answers:1
   },
   {
     question: "Which of the following is true about Ethernet crossover "+
@@ -80,7 +84,9 @@ const Questions: TQuestions = [
         text: "None of the other answers is correct.",              
         isCorrect: false
       },
-    ]
+    ],
+    type: "mc",
+    answers: 1      
   },
   {
     question: "Each answer lists two types of devices used in a 100BASE-T "+
@@ -108,7 +114,9 @@ const Questions: TQuestions = [
         text: "Wireless access point (Ethernet port) and switch",
         isCorrect: true
       },
-    ]
+    ],
+    type: "mc",
+    answers: 3  
   },
   {
     question: "Which of the following are advantages of using multimode "+
@@ -130,7 +138,9 @@ const Questions: TQuestions = [
         text: "To make use of an existing stock of LED-based SFP/SFP+ modules.",
         isCorrect: false
       }
-    ]
+    ],
+    type: "mc",
+    answers: 1  
   },
   {
     question: "Which of the following is true about the CSMA/CD algorithm?",
@@ -152,7 +162,9 @@ const Questions: TQuestions = [
         text: "None of the other answers is correct.",
         isCorrect: false
       },
-    ]
+    ],
+    type: "mc",
+    answers: 1  
   },
   {
     question: "Which of the following is true about the Ethernet FCS field?",
@@ -173,7 +185,9 @@ const Questions: TQuestions = [
         text: "It is used for encryption.",
         isCorrect: false
       },
-    ]
+    ],
+    type: "mc",
+    answers: 1  
   },
   {
     question: "Which of the following are true about the format of Ethernet "+
@@ -203,7 +217,9 @@ const Questions: TQuestions = [
         text: "The part of the address that holds this manufacturer's code has no specific name.",
         isCorrect: false
       }
-    ]
+    ],
+    type: "mc",
+    answers: 3  
   },
   {
     question: "Which of the following terms describe Ethernet addresses that "+
@@ -226,7 +242,9 @@ const Questions: TQuestions = [
         text: "Multicast address",
         isCorrect: true
       },
-    ]
+    ],
+    type: "mc",
+    answers: 2  
   }
 ]
 

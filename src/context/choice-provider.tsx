@@ -7,7 +7,7 @@ import type { TChoiceAction } from "@/reducers/choice-reducer"
 import type { TChoice } from "@/utils/definition"
 
 // Reducer functions.
-import choiceReducer from "@/reducers/choice-reducer"
+import answerReducer from "@/reducers/choice-reducer"
 
 
 type TChoiceContextProviderProps = {
@@ -16,12 +16,12 @@ type TChoiceContextProviderProps = {
 
 
 type TChoiceContext = {
-  selectedChoice: TChoice | null
+  selectedAnswer: TChoice | null
   dispatch: Dispatch<TChoiceAction>
 }
 
 
-const SelectedChoiceContext = createContext<TChoiceContext | null>(null)
+const SelectedAnswerContext = createContext<TChoiceContext | null>(null)
 
 
 // Initial state doesn't really matter unless you're gonna use it.
@@ -31,20 +31,20 @@ const initialState:TChoice = {
   isCorrect: false
 }
 
-const SelectedChoiceProvider = ({ children }: TChoiceContextProviderProps) => {
-  const [selectedChoice, dispatch] = useReducer(choiceReducer, null)
+const SelectedAnswerProvider = ({ children }: TChoiceContextProviderProps) => {
+  const [selectedAnswer, dispatch] = useReducer(answerReducer, null)
 
   return (
-    <SelectedChoiceContext.Provider value={{selectedChoice, dispatch}}>
+    <SelectedAnswerContext.Provider value={{selectedAnswer, dispatch}}>
       {children}
-    </SelectedChoiceContext.Provider>
+    </SelectedAnswerContext.Provider>
   )
 }
 
 
 // Custom hooks.
 const useSelectedChoiceContext = () => {
-  const choiceContext = useContext(SelectedChoiceContext)
+  const choiceContext = useContext(SelectedAnswerContext)
 
   if (!choiceContext) throw new Error("ChoiceContext must be inside ChoiceContextProvider")
 
@@ -52,5 +52,5 @@ const useSelectedChoiceContext = () => {
 }
 
 
-export default SelectedChoiceProvider
+export default SelectedAnswerProvider
 export { useSelectedChoiceContext }

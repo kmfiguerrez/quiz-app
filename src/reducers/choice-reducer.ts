@@ -7,7 +7,7 @@ type TChoiceAction = {
   payload: TChoice
 }
 
-const choiceReducer = (state: TChoice | null, action: TChoiceAction): TChoice | null => {
+const answerReducer = (state: TChoice | null, action: TChoiceAction): TChoice | null => {
   switch(action.type) {
     case 'changed_selection': {
       return action.payload
@@ -21,5 +21,5 @@ const choiceReducer = (state: TChoice | null, action: TChoiceAction): TChoice | 
 
 // type TQuestionReducer = ReturnType<typeof choiceReducer>
 
-export default choiceReducer
+export default answerReducer
 export type { TChoiceAction }

@@ -34,22 +34,22 @@ type TChoiceProp = {
 
 
 const Question = ({ question }: TQuestionProps) => {    
-  const {selectedChoice} = useSelectedChoiceContext()
-  const [isCorrect, setIsCorrect] = useState(false)
+  const {selectedAnswer} = useSelectedChoiceContext()
+  const [isAnsCorrect, setIsAnsCorrect] = useState(false)
   const [status, setStatus] = useState<TQuestionStatus>('answering')
   const [error, setError] = useState('')
-  // console.log('Selected choice: ', selectedChoice)
+  // console.log('Selected choice: ', selectedAnswer)
   // console.log('Error: ', error)
 
   // Check answer.
   const handleCheckAnswer = () => {
     // If haven't selected an asnwer yet.
-    if (!selectedChoice) {
+    if (!selectedAnswer) {
       return setError('Select an answer first.')
     }
 
     // Determine if selected answer is correct.
-    selectedChoice?.isCorrect ? setIsCorrect(true) : setIsCorrect(false)
+    selectedAnswer?.isCorrect ? setIsAnsCorrect(true) : setIsAnsCorrect(false)
 
     // Set status.
     setStatus("checked")
@@ -70,11 +70,11 @@ const Question = ({ question }: TQuestionProps) => {
       {status === "checked" && 
         <p
           className={clsx("text-lg text-center", {
-            "text-green-500": isCorrect,
-            "text-red-500": !isCorrect
+            "text-green-500": isAnsCorrect,
+            "text-red-500": !isAnsCorrect
           })}
         >
-          {isCorrect ? "Correct" : "Wrong"}
+          {isAnsCorrect ? "Correct" : "Wrong"}
         </p>
       }
 
@@ -109,7 +109,7 @@ const Question = ({ question }: TQuestionProps) => {
 
 const Choices = ({ choices, questionStatus }: TChoicesProp) => {
   return (
-    <div className="ps-1">
+    <div className="ps-1 grid grid-cols-1 gap-y-2">
       {choices.map(choice => (
           <Choice key={choice.prefixSymbol} questionStatus={questionStatus} prefixSymbol="" choice={choice} />
         ))
@@ -120,12 +120,13 @@ const Choices = ({ choices, questionStatus }: TChoicesProp) => {
 
 
 const Choice = ({ choice, questionStatus }: TChoiceProp) => {
-  const {selectedChoice, dispatch} = useSelectedChoiceContext()
+  const {selectedAnswer, dispatch} = useSelectedChoiceContext()
+  const selected = selectedAnswer?.prefixSymbol === choice.prefixSymbol
 
   return (
-    <button
+    <button      
       disabled={questionStatus === 'checked'}
-      className={clsx("flex mb-1 items-center",      
+      className={clsx("flex items-center max-w-max hover:bg-zinc-800/90 p-1 rounded-md",      
       {
         "text-green-500": questionStatus === "checked" && choice.isCorrect,
         "text-red-400": questionStatus === "checked" && !choice.isCorrect
@@ -147,14 +148,26 @@ const Choice = ({ choice, questionStatus }: TChoiceProp) => {
       }
 
       {/* Prefix symbol */}
-      <span className="ms-1">{choice.prefixSymbol}</span>.      
+      <span        
+        className={clsx(
+          "ms-1 rounded-full bg-gray-800 px-2 align-middle text-blue-500",
+          {
+            "outline outline-2 outline-offset-2 outline-blue-500": selected
+          }
+        )}
+      >
+        {choice.prefixSymbol}
+      </span>
+
       {/* Text */}
-      <span className="ms-1">
+      <span className={clsx("ms-2 ",
+          {
+           
+          }
+        )}
+      >
         {choice.text}
       </span>
-      {selectedChoice?.prefixSymbol === choice.prefixSymbol &&
-        <span className="text-white"> - you selected</span>
-      }
 
     </button>
   )

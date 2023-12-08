@@ -1,18 +1,21 @@
 // Custom Providers.
-import SelectedChoiceProvider from "@/context/choice-provider"
+import SelectedAnswerProvider from "@/context/choice-provider"
 
 // Custom Components.
 import Question from "./question"
 
 // Data.
 import Questions from '@/utils/data'
+import MyCheckboxGroup from "./checkbox-group"
+
 
 
 const Quiz = () => {
   return (
-    <SelectedChoiceProvider>
+    <SelectedAnswerProvider>
       <Question question={Questions[0]} />
-    </SelectedChoiceProvider>
+      {/* <MyCheckboxGroup question={Questions[0]} /> */}
+    </SelectedAnswerProvider>
   )
 }
 
