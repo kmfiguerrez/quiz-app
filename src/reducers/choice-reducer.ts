@@ -1,16 +1,21 @@
 import type { TChoice } from "@/utils/definition"
 
+type TRemoveAction = {
+  type: 'removed_selection'
+}
 
-
-type TChoiceAction = {
+type TSelectedAnsAction = TRemoveAction | {
   type: 'changed_selection'
   payload: TChoice
 }
 
-const answerReducer = (state: TChoice | null, action: TChoiceAction): TChoice | null => {
+const answerReducer = (state: TChoice | null, action: TSelectedAnsAction): TChoice | null => {
   switch(action.type) {
     case 'changed_selection': {
       return action.payload
+    }
+    case 'removed_selection': {
+      return null
     }
     default: {
       // throw new Error("Unknown action")
@@ -22,4 +27,4 @@ const answerReducer = (state: TChoice | null, action: TChoiceAction): TChoice | 
 // type TQuestionReducer = ReturnType<typeof choiceReducer>
 
 export default answerReducer
-export type { TChoiceAction }
+export type { TSelectedAnsAction }
