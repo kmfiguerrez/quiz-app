@@ -1,9 +1,9 @@
 'use client'
 
-import { Dispatch, ReactNode, useReducer, useState } from "react"
+import { Dispatch, ReactNode, useReducer } from "react"
 
 // Custom types.
-import type { TChoice, TQuestion, TQuizStatus } from "@/utils/definition"
+import type { TChoice, TQuestion, TQuizState, TQuizStatus } from "@/utils/definition"
 
 // Custom Providers.
 import { useSelectedChoiceContext } from "@/context/choice-provider"
@@ -24,7 +24,7 @@ import answerReducer, { TSelectedAnsAction } from "@/reducers/answer-reducer"
 
 type TQuestionProps = {
   question: TQuestion
-  quizStatus: TQuizStatus
+  quizState: TQuizState
 }
 
 type TChoicesProps = {
@@ -32,7 +32,7 @@ type TChoicesProps = {
 }
 
 type TChoiceProps = {
-  quizStatus: TQuizStatus
+  quizState: TQuizState
   choice: TChoice
   prefixSymbol: string
   numOfQuestion: number
@@ -48,7 +48,9 @@ type TChoiceProps = {
 }
 
 
-const Question = ({ question, quizStatus }: TQuestionProps) => {    
+const Question = ({ question, quizState }: TQuestionProps) => {
+  const {quizStatus, onSetQuizStatus} = quizState
+  
     // Choose the reducer function based on the number of correct answers.  
   const [selectedAnswer, dispatch1] = useReducer(answerReducer, null)
   const [selectedAnswersArray, dispatch2] = useReducer(answersReducer, [])
@@ -106,7 +108,7 @@ const Question = ({ question, quizStatus }: TQuestionProps) => {
           {question.choices.map(choice => {
               const c =  <Choice 
                   key={choice.prefixSymbol} 
-                  quizStatus={quizStatus} 
+                  quizState={quizState}
                   prefixSymbol={getPrefixSymbols("letters", index)} 
                   choice={choice}
                   numOfQuestion={question.answers}
@@ -138,7 +140,7 @@ const Choices = ({ children }: TChoicesProps) => {
 
 const Choice = ({ 
     choice, 
-    quizStatus, 
+    quizState, 
     numOfQuestion,
     hasSelectedAnswer,
     selectedAnswerState,
@@ -146,6 +148,7 @@ const Choice = ({
     prefixSymbol 
   }: TChoiceProps) => {
 
+  const {quizStatus, onSetQuizStatus} = quizState
   // const {selectedAnswer, dispatch} = useSelectedChoiceContext()
   const {selectedAnswer, onDispatch1} = selectedAnswerState
   const {selectedAnswersArray, onDispatch2} = selectedAnswersArrayState
@@ -182,11 +185,8 @@ const Choice = ({
       }
       )}
       onClick={() => {
-        // Unselect the answer.
-        // if (selected) return dispatch({type: "removed_selection"})
-        // const isEqual = selectedAnswer?.text === choice.text
-        // console.log('is equal: ', isEqual)
-     
+        // Reset the quiz state first.
+        onSetQuizStatus("answering")     
       
         // Set the selected answer.
 
@@ -219,7 +219,8 @@ const Choice = ({
         className={cn(
           "ms-1 me-3 rounded-full bg-gray-800 px-2 align-middle text-blue-500",
           {
-            "outline outline-2 outline-offset-2 outline-blue-500": selected
+            "outline outline-2 outline-offset-2 outline-blue-500": selected,
+            "ms-2": quizStatus === "checked" && hasSelectedAnswer
           }
         )}
       >

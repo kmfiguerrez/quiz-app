@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from "react"
+
 type TLetter = "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" |
                 "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" |
                 "t" | "u" | "v" | "w" | "x" | "y" | "z"
@@ -24,9 +26,15 @@ type TQuestions = Array<TQuestion>
 
 type TQuizStatus = 'answering' | 'checked'
 
+type TQuizState = {
+  quizStatus: TQuizStatus
+  onSetQuizStatus: Dispatch<SetStateAction<TQuizStatus>>
+}
+
 export type {
   TQuestions, 
   TQuestion, 
   TChoice,
-  TQuizStatus
+  TQuizStatus,
+  TQuizState
 }

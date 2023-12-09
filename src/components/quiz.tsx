@@ -19,7 +19,7 @@ import { TQuizStatus } from "@/utils/definition"
 
 const Quiz = () => {
   const [quizStatus, setQuizStatus] = useState<TQuizStatus>('answering')
-
+  
   return (
     <SelectedAnswerProvider>
       
@@ -38,7 +38,7 @@ const Quiz = () => {
       <ul className="list-decimal">
         {[Questions[0]].map(question => (
             <li>
-              <Question question={question} quizStatus={quizStatus} />
+              <Question question={question} quizState={{quizStatus, onSetQuizStatus: setQuizStatus}} />
               {/* <MyCheckboxGroup question={Questions[0]} /> */}
             </li>
           ))
