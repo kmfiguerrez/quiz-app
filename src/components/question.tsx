@@ -1,7 +1,7 @@
 'use client'
 
 import clsx from "clsx"
-import { ReactNode, useState } from "react"
+import { Dispatch, ReactNode, useReducer, useState } from "react"
 
 // Custom types.
 import type { TChoice, TQuestion, TQuizStatus } from "@/utils/definition"
@@ -15,6 +15,8 @@ import Xicon from "./svg/x-icon"
 
 // Custom utils.
 import cn from "@/utils/cn"
+import answersReducer, { TSelectedAnswersAction } from "@/reducers/answers-reducer"
+import answerReducer from "@/reducers/answer-reducer"
 
 
 
@@ -28,14 +30,24 @@ type TChoicesProp = {
 }
 
 type TChoiceProp = {
+  quizStatus: TQuizStatus
   choice: TChoice
   prefixSymbol: string
-  quizStatus: TQuizStatus
+  numOfQuestion: number
+  selectedAnswersState: {
+    selectedAnswers: Array<TChoice>,
+    onDispatch2: Dispatch<TSelectedAnswersAction>
+  }
 }
 
 
 const Question = ({ question, quizStatus }: TQuestionProps) => {    
-  const {selectedAnswer} = useSelectedChoiceContext()
+    // Choose the reducer function based on the number of correct answers.
+  const reducer = question.answers > 1 ? answersReducer : answerReducer
+  const [selectedAnswer, dispatch1] = useReducer(reducer, null)
+  const [selectedAnswers, dispatch2] = useReducer(answersReducer, [])
+  
+  // const {selectedAnswer} = useSelectedChoiceContext()
   // const [isAnsCorrect, setIsAnsCorrect] = useState(false)  
   const [questionError, setQuestionError] = useState('')
   // console.log('Selected choice: ', selectedAnswer)
@@ -88,7 +100,14 @@ const Question = ({ question, quizStatus }: TQuestionProps) => {
               never gonna use. See React context api doc.
           */}
           {question.choices.map(choice => (
-            <Choice key={choice.prefixSymbol} quizStatus={quizStatus} prefixSymbol="" choice={choice} />
+            <Choice 
+              key={choice.prefixSymbol} 
+              quizStatus={quizStatus} 
+              prefixSymbol="" 
+              choice={choice}
+              numOfQuestion={question.answers}
+              selectedAnswersState={{selectedAnswers, onDispatch2: dispatch2}}
+            />
           ))
           }
         </Choices>
@@ -108,9 +127,11 @@ const Choices = ({ children }: TChoicesProp) => {
 }
 
 
-const Choice = ({ choice, quizStatus }: TChoiceProp) => {
+const Choice = ({ choice, quizStatus, numOfQuestion, selectedAnswersState }: TChoiceProp) => {
   const {selectedAnswer, dispatch} = useSelectedChoiceContext()
-  console.log('selected: ', selectedAnswer)
+  const {selectedAnswers, onDispatch2} = selectedAnswersState
+  // console.log('selected: ', selectedAnswer)
+  // For question that has only one answer.
   const selected = selectedAnswer?.prefixSymbol === choice.prefixSymbol
   
   return (
@@ -125,10 +146,20 @@ const Choice = ({ choice, quizStatus }: TChoiceProp) => {
       onClick={() => {
         // Unselect the answer.
         // if (selected) return dispatch({type: "removed_selection"})
-        const isEqual = selectedAnswer?.text === choice.text
-        console.log('is equal: ', isEqual)
+        // const isEqual = selectedAnswer?.text === choice.text
+        // console.log('is equal: ', isEqual)
+
+        // To do
+        // If clicked again.
+        if ()
+
         
         // Set the selected answer.
+
+        // For question that has multiple correct answers.
+        if (numOfQuestion > 1) return onDispatch2({type:"added_answer", payload: choice})
+        
+        // For question that has one correct answer only.
         return dispatch({type:"changed_selection", payload: choice})
       }}
     >
