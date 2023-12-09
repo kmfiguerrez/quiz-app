@@ -2,6 +2,7 @@ import { TQuestions } from "./definition";
 
 const Questions: TQuestions = [
   {
+    id: '1',
     question: "In the LAN for a small office, some user devices connect to the "+
               "LAN using a cable, while others connect using wireless technology "+
               "(and no cable). Which of the following is true regarding the use of "+
@@ -9,22 +10,26 @@ const Questions: TQuestions = [
               ,
     choices: [
       {
+        questionOwner: "1",
         prefixSymbol: "a",
         text: "Only the devices that use cables are using Ethernet",
         isCorrect: true
       },
       {
+        questionOwner: "1",
         prefixSymbol: "b",
         text: "Only the devices that use wireless are using Ethernet",
         isCorrect: false
 
       },
       {
+        questionOwner: "1",
         prefixSymbol: "c",
         text: "Both the devices using cables and those using wireless are using Ethernet.",
         isCorrect: false
       },
       {
+        questionOwner: "1",
         prefixSymbol: "d",
         text: "None of the devices are using Ethernet.",
         isCorrect: false
@@ -34,6 +39,7 @@ const Questions: TQuestions = [
     answers: 1    
   },
   {
+    id: '2',
     question: "Which of the folllowing Ethernet standards defines Gigabit "+
               "Ethernet over UTP cabling?",
     choices: [
@@ -58,6 +64,7 @@ const Questions: TQuestions = [
     answers:1
   },
   {
+    id: '3',
     question: "Which of the following is true about Ethernet crossover "+
               "cables for Fast Ethernet?",
     choices: [
@@ -89,6 +96,7 @@ const Questions: TQuestions = [
     answers: 1      
   },
   {
+    id: '4',
     question: "Each answer lists two types of devices used in a 100BASE-T "+
               "network. If these devices were connected with UTP Ethernet "+
               "cables, which pairs of devices would require a "+
@@ -119,6 +127,7 @@ const Questions: TQuestions = [
     answers: 3  
   },
   {
+    id: '5',
     question: "Which of the following are advantages of using multimode "+
               "fiber for an Ethernet link instead of UTP of single-mode fiber.",
     choices: [
@@ -143,6 +152,7 @@ const Questions: TQuestions = [
     answers: 1  
   },
   {
+    id: '6',
     question: "Which of the following is true about the CSMA/CD algorithm?",
     choices: [
       {
@@ -167,6 +177,7 @@ const Questions: TQuestions = [
     answers: 1  
   },
   {
+    id: '7',
     question: "Which of the following is true about the Ethernet FCS field?",
     choices: [
       {
@@ -190,6 +201,7 @@ const Questions: TQuestions = [
     answers: 1  
   },
   {
+    id: '8',
     question: "Which of the following are true about the format of Ethernet "+
               "addresses? (Choose three answers)",
     choices: [
@@ -222,6 +234,7 @@ const Questions: TQuestions = [
     answers: 3  
   },
   {
+    id: '9',
     question: "Which of the following terms describe Ethernet addresses that "+
               "can be used to send one frame that is delivered to multiple "+
               "devices on the LAN? (Choose two answers)",

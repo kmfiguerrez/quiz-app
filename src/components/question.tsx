@@ -1,7 +1,7 @@
 'use client'
 
 import clsx from "clsx"
-import { useState } from "react"
+import { ReactNode, useState } from "react"
 
 // Custom types.
 import type { TChoice, TQuestion } from "@/utils/definition"
@@ -13,6 +13,9 @@ import { useSelectedChoiceContext } from "@/context/choice-provider"
 import CheckIcon from "./svg/check-icon"
 import Xicon from "./svg/x-icon"
 
+// Custom utils.
+import cn from "@/utils/cn"
+
 
 
 type TQuestionProps = {
@@ -22,8 +25,7 @@ type TQuestionProps = {
 type TQuestionStatus = 'answering' | 'checked'
 
 type TChoicesProp = {
-  choices: Array<TChoice>
-  questionStatus: TQuestionStatus
+  children: ReactNode
 }
 
 type TChoiceProp = {
@@ -78,14 +80,26 @@ const Question = ({ question }: TQuestionProps) => {
         </p>
       }
 
+
       {/* Display Question */}
       <div
         className="border p-1"
       >
+        {/* Question text */}
         <p className="mb-1">
           {question.question}
-        </p>
-        <Choices choices={question.choices} questionStatus={status} />
+        </p>        
+
+        <Choices>
+          {/* Passing choice component as a children prevents its
+              parent component (choices) accepting props that it's
+              never gonna use. See React context api doc.
+          */}
+          {question.choices.map(choice => (
+            <Choice key={choice.prefixSymbol} questionStatus={status} prefixSymbol="" choice={choice} />
+          ))
+          }
+        </Choices>
       </div>
       
       {/* Check button */}
@@ -107,13 +121,10 @@ const Question = ({ question }: TQuestionProps) => {
 }
 
 
-const Choices = ({ choices, questionStatus }: TChoicesProp) => {
+const Choices = ({ children }: TChoicesProp) => {
   return (
     <div className="ps-1 grid grid-cols-1 gap-y-2">
-      {choices.map(choice => (
-          <Choice key={choice.prefixSymbol} questionStatus={questionStatus} prefixSymbol="" choice={choice} />
-        ))
-      }
+      {children}
     </div>  
   )
 }
@@ -126,10 +137,10 @@ const Choice = ({ choice, questionStatus }: TChoiceProp) => {
   return (
     <button      
       disabled={questionStatus === 'checked'}
-      className={clsx("flex items-center max-w-max hover:bg-zinc-800/90 p-1 rounded-md",      
+      className={cn("flex items-center max-w-max hover:bg-zinc-800/90 p-1 rounded-md",      
       {
-        // "text-green-500": questionStatus === "checked" && choice.isCorrect,
-        // "text-red-400": questionStatus === "checked" && !choice.isCorrect
+        "text-green-500": questionStatus === "checked" && choice.isCorrect,
+        "text-red-500": questionStatus === "checked" && !choice.isCorrect
         
       }
       )}
@@ -148,10 +159,11 @@ const Choice = ({ choice, questionStatus }: TChoiceProp) => {
         <Xicon />        
       }
 
+
       {/* Prefix symbol */}
       <span        
-        className={clsx(
-          "ms-1 rounded-full bg-gray-800 px-2 align-middle text-blue-500",
+        className={cn(
+          "ms-1 me-3 rounded-full bg-gray-800 px-2 align-middle text-blue-500",
           {
             "outline outline-2 outline-offset-2 outline-blue-500": selected
           }
@@ -161,10 +173,9 @@ const Choice = ({ choice, questionStatus }: TChoiceProp) => {
       </span>
 
       {/* Text */}
-      <span className={clsx("ms-2 ",
+      <span className={cn(" ",
           {
-            "text-green-500": questionStatus === "checked" && choice.isCorrect,
-            "text-red-400": questionStatus === "checked" && !choice.isCorrect
+            
           }
         )}
       >

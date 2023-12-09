@@ -4,12 +4,14 @@ type TLetter = "a" | "b" | "c" | "d" | "e" | "f" | "g" | "f" | "h" | "i"
 type TQuestionType = 'mc' | "tof"
 
 type TChoice = {
+  questionOwner?: string // id of the question it belongs to.
   prefixSymbol?: TLetter,
   text: string
   isCorrect: boolean
 }
 
 type TQuestion = {
+  id: string
   question: string
   choices: Array<TChoice>
   type: TQuestionType
