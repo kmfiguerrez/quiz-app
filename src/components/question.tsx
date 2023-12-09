@@ -3,7 +3,7 @@
 import { Dispatch, ReactNode, useReducer, useRef } from "react"
 
 // Custom types.
-import type { TChoice, TQuestion, TQuizState } from "@/utils/definition"
+import type { TChoice, TQuestion, TQuizData } from "@/utils/definition"
 
 // Custom Providers.
 import { useSelectedChoiceContext } from "@/context/choice-provider"
@@ -24,7 +24,7 @@ import answerReducer, { TSelectedAnsAction } from "@/reducers/answer-reducer"
 
 type TQuestionProps = {
   question: TQuestion
-  quizState: TQuizState
+  quizData: TQuizData
 }
 
 type TChoicesProps = {
@@ -32,24 +32,37 @@ type TChoicesProps = {
 }
 
 type TChoiceProps = {
-  quizState: TQuizState
+  quizData: TQuizData
   choice: TChoice
   prefixSymbol: string
-  numOfQuestion: number
-  hasSelectedAnswer: boolean
-  selectedAnswerState: {
-    selectedAnswer: TChoice | null
-    onDispatch1: Dispatch<TSelectedAnsAction>
-  }
-  selectedAnswersArrayState: {
-    selectedAnswersArray: Array<TChoice>,
-    onDispatch2: Dispatch<TSelectedAnswersAction>
+  // numOfQuestion: number
+  // hasSelectedAnswer: boolean
+  // selectedAnswerState: {
+  //   selectedAnswer: TChoice | null
+  //   onDispatch1: Dispatch<TSelectedAnsAction>
+  // }
+  // selectedAnswersArrayState: {
+  //   selectedAnswersArray: Array<TChoice>,
+  //   onDispatch2: Dispatch<TSelectedAnswersAction>
+  // }
+  questionData: {
+    numOfQuestion: number
+    score: number
+    hasSelectedAnswer: boolean
+    selectedAnswerState: {
+      selectedAnswer: TChoice | null
+      onDispatch1: Dispatch<TSelectedAnsAction>
+    }
+    selectedAnswersArrayState: {
+      selectedAnswersArray: Array<TChoice>,
+      onDispatch2: Dispatch<TSelectedAnswersAction>
+    }
   }
 }
 
 
-const Question = ({ question, quizState }: TQuestionProps) => {
-  const {quizStatus, onSetQuizStatus} = quizState
+const Question = ({ question, quizData }: TQuestionProps) => {
+  const {quizStatus, onSetQuizStatus} = quizData.quizState
   
     // Choose the reducer function based on the number of correct answers.  
   const [selectedAnswer, dispatch1] = useReducer(answerReducer, null)
@@ -135,13 +148,20 @@ const Question = ({ question, quizState }: TQuestionProps) => {
           {question.choices.map(choice => {
               const c =  <Choice 
                   key={choice.prefixSymbol} 
-                  quizState={quizState}
+                  quizData={quizData}
                   prefixSymbol={getPrefixSymbols("letters", index)} 
                   choice={choice}
-                  numOfQuestion={question.answers}
-                  hasSelectedAnswer={hasSelectedAnswer}
-                  selectedAnswerState={{selectedAnswer, onDispatch1: dispatch1}}
-                  selectedAnswersArrayState={{selectedAnswersArray, onDispatch2: dispatch2}}
+                  // numOfQuestion={question.answers}
+                  // hasSelectedAnswer={hasSelectedAnswer}
+                  // selectedAnswerState={{selectedAnswer, onDispatch1: dispatch1}}
+                  // selectedAnswersArrayState={{selectedAnswersArray, onDispatch2: dispatch2}}
+                  questionData={{
+                    numOfQuestion: question.answers,
+                    score,
+                    hasSelectedAnswer,
+                    selectedAnswerState: {selectedAnswer, onDispatch1: dispatch1},
+                    selectedAnswersArrayState:{selectedAnswersArray, onDispatch2: dispatch2}
+                  }}
                 />
               index++
               return c
@@ -166,17 +186,22 @@ const Choices = ({ children }: TChoicesProps) => {
 
 
 const Choice = ({ 
-    choice, 
-    quizState, 
-    numOfQuestion,
-    hasSelectedAnswer,
-    selectedAnswerState,
-    selectedAnswersArrayState, 
-    prefixSymbol 
+    choice,
+    prefixSymbol, 
+    quizData,     
+    questionData 
   }: TChoiceProps) => {
 
-  const {quizStatus, onSetQuizStatus} = quizState
+  const {quizStatus, onSetQuizStatus} = quizData.quizState
+  const {questionsResult, onSetQuestionsResult} = quizData.quizSelectedQuestions
   // const {selectedAnswer, dispatch} = useSelectedChoiceContext()
+  const {
+    hasSelectedAnswer,
+    score,
+    numOfQuestion,
+    selectedAnswerState,
+    selectedAnswersArrayState
+  } = questionData
   const {selectedAnswer, onDispatch1} = selectedAnswerState
   const {selectedAnswersArray, onDispatch2} = selectedAnswersArrayState
   // console.log('selected array : ', selectedAnswersArray)
@@ -212,6 +237,8 @@ const Choice = ({
       }
       )}
       onClick={() => {
+        // TODO: Make each question send to quiz comp.
+
         // Reset the quiz state first.
         onSetQuizStatus("answering")     
       
@@ -221,6 +248,7 @@ const Choice = ({
         if (numOfQuestion > 1) {
           // If choice already selected and clicked (selected answer) again.
           if (selected) return onDispatch2({type: "removed_answer", payload: {prefixSymbol}})
+
 
           // Otherwise not yet selected.
           return onDispatch2({type:"added_answer", payload: {...choice, prefixSymbol}})

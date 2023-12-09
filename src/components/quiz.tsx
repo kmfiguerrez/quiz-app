@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from "react"
+import { useReducer, useState } from "react"
 
 // Custom Providers.
 import SelectedAnswerProvider from "@/context/choice-provider"
@@ -15,11 +15,14 @@ import MyCheckboxGroup from "./checkbox-group"
 
 // Custom types.
 import { TQuizStatus } from "@/utils/definition"
+import questionsReducer from "@/reducers/questions-reducer"
 
 
 const Quiz = () => {
   const [quizStatus, setQuizStatus] = useState<TQuizStatus>('answering')
-  
+  // questionResult state will be used to calculate the total score.
+  const [questionsResult, dispatch] = useReducer(questionsReducer, [])
+
   return (
     <SelectedAnswerProvider>
       
@@ -38,7 +41,13 @@ const Quiz = () => {
       <ul className="list-decimal">
         {Questions.map(question => (
             <li>
-              <Question question={question} quizState={{quizStatus, onSetQuizStatus: setQuizStatus}} />
+              <Question 
+                question={question} 
+                quizData={{
+                  quizState: {quizStatus, onSetQuizStatus: setQuizStatus},
+                  quizSelectedQuestions: {questionsResult, onSetQuestionsResult: dispatch}
+                }}
+              />
               {/* <MyCheckboxGroup question={Questions[0]} /> */}
             </li>
           ))

@@ -1,3 +1,4 @@
+import { TSelectedQuestionAction } from "@/reducers/questions-reducer"
 import { Dispatch, SetStateAction } from "react"
 
 type TLetter = "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" |
@@ -26,22 +27,30 @@ type TQuestions = Array<TQuestion>
 
 type TQuizStatus = 'answering' | 'checked'
 
-type TQuizState = {
-  quizStatus: TQuizStatus
-  onSetQuizStatus: Dispatch<SetStateAction<TQuizStatus>>
-}
-
 // Quiz component holds this data
 type TQuestionsResult = {
   questionId: string
   score: number
 }
 
+type TQuizData = {
+  quizState: {
+    quizStatus: TQuizStatus
+    onSetQuizStatus: Dispatch<SetStateAction<TQuizStatus>>
+  }
+  quizSelectedQuestions: {
+    questionsResult: Array<TQuestionsResult>
+    onSetQuestionsResult: Dispatch<TSelectedQuestionAction>
+  }  
+}
+
+
+
 export type {
   TQuestions, 
   TQuestion, 
   TChoice,
   TQuizStatus,
-  TQuizState,
+  TQuizData,
   TQuestionsResult
 }
