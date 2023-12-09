@@ -3,11 +3,11 @@
 import { Dispatch, ReactNode, createContext, useReducer, useContext } from "react"
 
 // Custom types.
-import type { TSelectedAnsAction } from "@/reducers/choice-reducer"
+import type { TSelectedAnsAction } from "@/reducers/answer-reducer"
 import type { TChoice } from "@/utils/definition"
 
 // Reducer functions.
-import answerReducer from "@/reducers/choice-reducer"
+import answerReducer from "@/reducers/answer-reducer"
 
 
 type TChoiceContextProviderProps = {

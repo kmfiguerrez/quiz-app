@@ -16,9 +16,15 @@ type TQuestion = {
   choices: Array<TChoice>
   type: TQuestionType
   answers: number
-
 }
 
 type TQuestions = Array<TQuestion>
 
-export type {TQuestions, TQuestion, TChoice}
+type TQuizStatus = 'answering' | 'checked'
+
+export type {
+  TQuestions, 
+  TQuestion, 
+  TChoice,
+  TQuizStatus
+}

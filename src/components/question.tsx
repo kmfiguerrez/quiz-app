@@ -4,7 +4,7 @@ import clsx from "clsx"
 import { ReactNode, useState } from "react"
 
 // Custom types.
-import type { TChoice, TQuestion } from "@/utils/definition"
+import type { TChoice, TQuestion, TQuizStatus } from "@/utils/definition"
 
 // Custom Providers.
 import { useSelectedChoiceContext } from "@/context/choice-provider"
@@ -20,9 +20,8 @@ import cn from "@/utils/cn"
 
 type TQuestionProps = {
   question: TQuestion
+  quizStatus: TQuizStatus
 }
-
-type TQuestionStatus = 'answering' | 'checked'
 
 type TChoicesProp = {
   children: ReactNode
@@ -31,15 +30,14 @@ type TChoicesProp = {
 type TChoiceProp = {
   choice: TChoice
   prefixSymbol: string
-  questionStatus: TQuestionStatus
+  quizStatus: TQuizStatus
 }
 
 
-const Question = ({ question }: TQuestionProps) => {    
+const Question = ({ question, quizStatus }: TQuestionProps) => {    
   const {selectedAnswer} = useSelectedChoiceContext()
-  const [isAnsCorrect, setIsAnsCorrect] = useState(false)
-  const [status, setStatus] = useState<TQuestionStatus>('answering')
-  const [error, setError] = useState('')
+  // const [isAnsCorrect, setIsAnsCorrect] = useState(false)  
+  const [questionError, setQuestionError] = useState('')
   // console.log('Selected choice: ', selectedAnswer)
   // console.log('Error: ', error)
 
@@ -47,39 +45,18 @@ const Question = ({ question }: TQuestionProps) => {
   const handleCheckAnswer = () => {
     // If haven't selected an asnwer yet.
     if (!selectedAnswer) {
-      return setError('Select an answer first.')
+      // return setError('Select an answer first.')
     }
 
     // Determine if selected answer is correct.
-    selectedAnswer?.isCorrect ? setIsAnsCorrect(true) : setIsAnsCorrect(false)
+    // selectedAnswer?.isCorrect ? setIsAnsCorrect(true) : setIsAnsCorrect(false)
 
     // Set status.
-    setStatus("checked")
+    
   }
 
   return (
     <>
-      {/* Error Message */}
-      {error &&
-        <p
-          className="text-red-500 text-lg text-center"
-        >
-          {error}
-        </p>
-      }
-
-      {/* Status Message*/}
-      {status === "checked" && 
-        <p
-          className={clsx("text-lg text-center", {
-            "text-green-500": isAnsCorrect,
-            "text-red-500": !isAnsCorrect
-          })}
-        >
-          {isAnsCorrect ? "Correct" : "Wrong"}
-        </p>
-      }
-
 
       {/* Display Question */}
       <div
@@ -87,8 +64,23 @@ const Question = ({ question }: TQuestionProps) => {
       >
         {/* Question text */}
         <p className="mb-1">
-          {question.question}
-        </p>        
+          <span>
+            {question.question}
+          </span>
+
+          {/* Error Message */}          
+          {quizStatus === "checked" && !selectedAnswer &&
+            <span className="text-red-400">
+              {question.answers > 1 ? (
+                  ` - Select ${question.answers} answers.`
+                ) : (
+                  ' - Select an answer.'
+                )
+              }
+            </span>
+          }
+          
+        </p>
 
         <Choices>
           {/* Passing choice component as a children prevents its
@@ -96,26 +88,12 @@ const Question = ({ question }: TQuestionProps) => {
               never gonna use. See React context api doc.
           */}
           {question.choices.map(choice => (
-            <Choice key={choice.prefixSymbol} questionStatus={status} prefixSymbol="" choice={choice} />
+            <Choice key={choice.prefixSymbol} quizStatus={quizStatus} prefixSymbol="" choice={choice} />
           ))
           }
         </Choices>
       </div>
       
-      {/* Check button */}
-      <button
-        onClick={() => {
-          // Reset the error.
-          setError('')
-
-          // Reset status.
-          setStatus("answering")
-
-          handleCheckAnswer()
-        }}
-      >
-        Check
-      </button>
     </>
   )
 }
@@ -130,32 +108,37 @@ const Choices = ({ children }: TChoicesProp) => {
 }
 
 
-const Choice = ({ choice, questionStatus }: TChoiceProp) => {
+const Choice = ({ choice, quizStatus }: TChoiceProp) => {
   const {selectedAnswer, dispatch} = useSelectedChoiceContext()
+  console.log('selected: ', selectedAnswer)
   const selected = selectedAnswer?.prefixSymbol === choice.prefixSymbol
-
+  
   return (
     <button      
-      disabled={questionStatus === 'checked'}
-      className={cn("flex items-center max-w-max hover:bg-zinc-800/90 p-1 rounded-md",      
+      disabled={quizStatus === 'checked'}
+      className={cn("flex items-center hover:bg-zinc-800/90 p-1 rounded-md",      
       {
-        "text-green-500": questionStatus === "checked" && choice.isCorrect,
-        "text-red-500": questionStatus === "checked" && !choice.isCorrect
-        
+        "text-green-500": quizStatus === "checked" && choice.isCorrect,
+        "text-red-500": quizStatus === "checked" && !choice.isCorrect        
       }
       )}
       onClick={() => {
-        // console.log(choice)
-        dispatch({type:"changed_selection", payload: choice})
+        // Unselect the answer.
+        // if (selected) return dispatch({type: "removed_selection"})
+        const isEqual = selectedAnswer?.text === choice.text
+        console.log('is equal: ', isEqual)
+        
+        // Set the selected answer.
+        return dispatch({type:"changed_selection", payload: choice})
       }}
     >
 
       {/* Result symbol */}
-      {questionStatus === "checked" && choice.isCorrect &&
+      {quizStatus === "checked" && choice.isCorrect &&
         <CheckIcon />        
       }
 
-      {questionStatus === "checked" && !choice.isCorrect &&
+      {quizStatus === "checked" && !choice.isCorrect &&
         <Xicon />        
       }
 
@@ -173,7 +156,7 @@ const Choice = ({ choice, questionStatus }: TChoiceProp) => {
       </span>
 
       {/* Text */}
-      <span className={cn(" ",
+      <span className={cn("",
           {
             
           }
