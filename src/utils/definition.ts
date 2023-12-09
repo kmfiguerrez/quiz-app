@@ -31,10 +31,17 @@ type TQuizState = {
   onSetQuizStatus: Dispatch<SetStateAction<TQuizStatus>>
 }
 
+// Quiz component holds this data
+type TQuestionsResult = {
+  questionId: string
+  score: number
+}
+
 export type {
   TQuestions, 
   TQuestion, 
   TChoice,
   TQuizStatus,
-  TQuizState
+  TQuizState,
+  TQuestionsResult
 }
