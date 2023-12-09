@@ -128,8 +128,9 @@ const Choice = ({ choice, questionStatus }: TChoiceProp) => {
       disabled={questionStatus === 'checked'}
       className={clsx("flex items-center max-w-max hover:bg-zinc-800/90 p-1 rounded-md",      
       {
-        "text-green-500": questionStatus === "checked" && choice.isCorrect,
-        "text-red-400": questionStatus === "checked" && !choice.isCorrect
+        // "text-green-500": questionStatus === "checked" && choice.isCorrect,
+        // "text-red-400": questionStatus === "checked" && !choice.isCorrect
+        
       }
       )}
       onClick={() => {
@@ -162,7 +163,8 @@ const Choice = ({ choice, questionStatus }: TChoiceProp) => {
       {/* Text */}
       <span className={clsx("ms-2 ",
           {
-           
+            "text-green-500": questionStatus === "checked" && choice.isCorrect,
+            "text-red-400": questionStatus === "checked" && !choice.isCorrect
           }
         )}
       >
