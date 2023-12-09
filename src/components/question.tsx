@@ -1,9 +1,9 @@
 'use client'
 
-import { Dispatch, ReactNode, useReducer } from "react"
+import { Dispatch, ReactNode, useReducer, useRef } from "react"
 
 // Custom types.
-import type { TChoice, TQuestion, TQuizState, TQuizStatus } from "@/utils/definition"
+import type { TChoice, TQuestion, TQuizState } from "@/utils/definition"
 
 // Custom Providers.
 import { useSelectedChoiceContext } from "@/context/choice-provider"
@@ -55,23 +55,43 @@ const Question = ({ question, quizState }: TQuestionProps) => {
   const [selectedAnswer, dispatch1] = useReducer(answerReducer, null)
   const [selectedAnswersArray, dispatch2] = useReducer(answersReducer, [])
 
+  // Determine the score
+  let score = 0
   // Determine if user has selected an answer(s).
   let hasSelectedAnswer = false
+
   // For question that has multiple correct answers.
   if (question.answers > 1) {
     // If user has selected an answer.
-    if (selectedAnswersArray.length !== 0) hasSelectedAnswer = true    
+    if (selectedAnswersArray.length !== 0) hasSelectedAnswer = true
+
+    // Determine the score.
+    // Reset the score first.
+    score = 0
+    selectedAnswersArray.map(answer => {
+      answer.isCorrect && score++
+    })
+    score = Number((score / question.answers).toFixed(2))
   }
   // For question that has only one correct answer.
   if (question.answers === 1) {
     // If user has selected an answer.
     if (selectedAnswer) hasSelectedAnswer = true
-  }
-  
+
+    // Determine the score.
+    // Reset the score first.
+    score = 0
+    selectedAnswer?.isCorrect && score++
+  }  
 
   // Used for getting prefix symbols.
   let index = 0
+
+  // For error message.
+  const showErrorMessage = quizStatus === "checked" && !hasSelectedAnswer
   
+  // Get span with letter f.
+  const letterF = useRef(null)
 
   return (
     <>
@@ -87,7 +107,7 @@ const Question = ({ question, quizState }: TQuestionProps) => {
           </span>
 
           {/* Error Message */}          
-          {quizStatus === "checked" && !hasSelectedAnswer &&
+          {showErrorMessage &&
             <span className="text-red-400">
               {question.answers > 1 ? (
                   ` - Select ${question.answers} answers.`
@@ -95,6 +115,13 @@ const Question = ({ question, quizState }: TQuestionProps) => {
                   ' - Select an answer.'
                 )
               }
+            </span>
+          }
+
+          {/* Show score */}
+          {quizStatus === "checked" && !showErrorMessage && 
+            <span className="text-blue-500">
+              {` ${score} point`}
             </span>
           }
           
@@ -178,7 +205,7 @@ const Choice = ({
       // Disable only if user has selected an answer and quiz component
       // has finished checking.
       disabled={quizStatus === 'checked' && hasSelectedAnswer}
-      className={cn("flex items-center hover:bg-zinc-800/90 p-1 rounded-md",      
+      className={cn("flex items-center hover:bg-zinc-800/90 p-1 rounded-md max-w-max pe-3",      
       {
         "text-green-500": quizStatus === "checked" && hasSelectedAnswer && choice.isCorrect,
         "text-red-500": quizStatus === "checked" && hasSelectedAnswer && !choice.isCorrect        
@@ -215,11 +242,12 @@ const Choice = ({
 
 
       {/* Prefix symbol */}
-      <span        
+      <span
+        
         className={cn(
           "ms-1 me-3 rounded-full bg-gray-800 px-2 align-middle text-blue-500",
           {
-            "outline outline-2 outline-offset-2 outline-blue-500": selected,
+            "outline outline-2 outline-offset-2 outline-blue-500 ": selected,
             "ms-2": quizStatus === "checked" && hasSelectedAnswer
           }
         )}

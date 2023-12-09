@@ -36,7 +36,7 @@ const Quiz = () => {
       } */}
 
       <ul className="list-decimal">
-        {[Questions[0]].map(question => (
+        {Questions.map(question => (
             <li>
               <Question question={question} quizState={{quizStatus, onSetQuizStatus: setQuizStatus}} />
               {/* <MyCheckboxGroup question={Questions[0]} /> */}
@@ -47,10 +47,10 @@ const Quiz = () => {
 
       <button
         onClick={() => {
-          // Reset the error.
-          // setError('')
+          // Reset the status.
+          setQuizStatus("answering")
 
-          // Reset status.
+          // Set status.
           setQuizStatus('checked')      
         }}
       >
