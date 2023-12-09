@@ -2,7 +2,9 @@ import type { TChoice } from "@/utils/definition"
 
 type TRemoveAction = {
   type: 'removed_answer'
-  payload: TChoice
+  payload: {
+    prefixSymbol: string
+  }
 }
 
 type TSelectedAnswersAction = TRemoveAction | {

@@ -11,26 +11,26 @@ const Questions: TQuestions = [
     choices: [
       {
         questionOwner: "1",
-        prefixSymbol: "a",
+        // prefixSymbol: "a",
         text: "Only the devices that use cables are using Ethernet",
         isCorrect: true
       },
       {
         questionOwner: "1",
-        prefixSymbol: "b",
+        // prefixSymbol: "b",
         text: "Only the devices that use wireless are using Ethernet",
         isCorrect: false
 
       },
       {
         questionOwner: "1",
-        prefixSymbol: "c",
+        // prefixSymbol: "c",
         text: "Both the devices using cables and those using wireless are using Ethernet.",
         isCorrect: false
       },
       {
         questionOwner: "1",
-        prefixSymbol: "d",
+        // prefixSymbol: "d",
         text: "None of the devices are using Ethernet.",
         isCorrect: false
       },
