@@ -19,6 +19,8 @@ import getPrefixSymbols from "@/utils/get-prefixsymbols"
 // Reducers.
 import answersReducer, { TSelectedAnswersAction } from "@/reducers/answers-reducer"
 import answerReducer, { TSelectedAnsAction } from "@/reducers/answer-reducer"
+import { getScore } from "@/utils/score"
+import { getNextSelectedAnswers } from "@/utils/getNextState"
 
 
 
@@ -37,8 +39,7 @@ type TChoiceProps = {
   prefixSymbol: string
   questionData: {
     questionId: string
-    numOfAnswers: number
-    score: number
+    numOfAnswers: number    
     hasSelectedAnswer: boolean    
     selectedAnswerState: {
       selectedAnswer: TChoice | null
@@ -80,26 +81,19 @@ const Question = ({ question, quizData }: TQuestionProps) => {
       // If selectedAnswersArray is not zero, then user has chosen an answer.
       hasSelectedAnswer = true
     
-      // Determine the score.
-      // Reset the score first.
-      score = 0
-      // Then get the total score.
-      selectedAnswersArray.map(answer => {
-        answer.isCorrect && score++
-      })
-      score = Number((score / question.answers).toFixed(2))
+      // Determine the score.      
+      score = getScore({selectedAnswers: selectedAnswersArray, correctAnswers: question.answers})            
     }    
   }
   // For question that has only one correct answer.
   if (question.answers === 1) {
     // If user has selected an answer.
-    if (selectedAnswer) hasSelectedAnswer = true
-
-    // Determine the score.
-    // Reset the score first.
-    score = 0
-    // If the selected answer is correct, increment the score by 1.
-    selectedAnswer?.isCorrect && score++
+    if (selectedAnswer) {
+      hasSelectedAnswer = true  
+    
+      // Determine the score.      
+      score = getScore(selectedAnswer)      
+    }
   }  
 
   // Used for getting prefix symbols.
@@ -159,8 +153,7 @@ const Question = ({ question, quizData }: TQuestionProps) => {
                   choice={choice}                  
                   questionData={{
                     questionId: question.id,
-                    numOfAnswers: question.answers,
-                    score,
+                    numOfAnswers: question.answers,                    
                     hasSelectedAnswer,                    
                     selectedAnswerState: {selectedAnswer, onDispatch1: dispatch1},
                     selectedAnswersArrayState:{selectedAnswersArray, onDispatch2: dispatch2},
@@ -202,8 +195,7 @@ const Choice = ({
   // Qustion component data.
   const {
     questionId,
-    hasSelectedAnswer,    
-    score,
+    hasSelectedAnswer,        
     numOfAnswers,
     selectedAnswerState,
     selectedAnswersArrayState,
@@ -249,8 +241,17 @@ const Choice = ({
          *    states(selectedAnswer and selectedAnswersArray).
          * 2. Include the question(question id and score) in the
          *    Quiz component's questionsResult.
+         * Note:
+         *    At initial render, selectedAnswer is equal to null         
+         *    and selectedAnswersArray is equal to []. So we have
+         *    to get around this to get the correct score.
         */
         
+        // Here's the solution to get the correct score.
+        const nextSelectedAnswer = choice
+        // Get the previous selected answers array and the selected answer.
+        const nextSelectedAnswersArray: Array<TChoice> = getNextSelectedAnswers(selectedAnswersArray, {...choice, prefixSymbol})        
+
         // Update the quiz state only if the check button has been clicked.
         quizData.hasChecked && onSetQuizStatus("answering")
       
@@ -261,12 +262,12 @@ const Choice = ({
           // If choice already selected and clicked (selected answer) again.
           if (selected) {
             // Removed the answer.
-            onDispatch2({type: "removed_answer", payload: {prefixSymbol}})
+            onDispatch2({type: "removed_answer", payload: {prefixSymbol}})     
 
             // If there's only one item left in the selectedAnswersArray 
             // state and it's removed, then that means user hasn't
             // selected an answer.
-            if (selectedAnswersArray.length === 1) {
+            if (!nextSelectedAnswersArray.length) {
               // Removed the question in the questionsResult state of 
               // quiz component.
               onSetQuestionsResult({type: "removed_question", payload: {questionId}})
@@ -282,11 +283,12 @@ const Choice = ({
           // Add the question result(question id and score) to questionsResult state of quiz component
           // if user has selected an answer.
           if (isQuestionIncluded) {
-            // Changed the question's payload results.
-            return onSetQuestionsResult({type: "changed_question", payload: {questionId, score}})                    
+            // Changed the question's payload results.            
+            return onSetQuestionsResult({type: "changed_question", payload: {questionId, score: getScore({selectedAnswers: nextSelectedAnswersArray, correctAnswers: numOfAnswers})}})                    
           }
-          // Otherwise not yet included.                    
-          onSetQuestionsResult({type: "added_question", payload: {questionId, score}})  
+          // Otherwise not yet included.
+          // console.log('ano na: ', getScore({selectedAnswers: nextSelectedAnswersArray, correctAnswers: numOfAnswers}))                    
+          onSetQuestionsResult({type: "added_question", payload: {questionId, score: getScore({selectedAnswers: nextSelectedAnswersArray, correctAnswers: numOfAnswers})}})  
           // Update the state isQuestionIncluded.
           return  onSetIsQuestionIncluded(true)
         }
@@ -301,11 +303,11 @@ const Choice = ({
         if (isQuestionIncluded) {
           console.log('ey')
           // Changed the question's payload results.
-          return onSetQuestionsResult({type: "changed_question", payload: {questionId, score}})                    
+          return onSetQuestionsResult({type: "changed_question", payload: {questionId, score: getScore(nextSelectedAnswer)}})                    
         }
         
         // Otherwise not yet included.
-        onSetQuestionsResult({type: "added_question", payload: {questionId, score}})
+        onSetQuestionsResult({type: "added_question", payload: {questionId, score: getScore(nextSelectedAnswer)}})
         // Update the state isQuestionIncluded.
         return  onSetIsQuestionIncluded(true)
       }}
