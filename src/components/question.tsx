@@ -1,6 +1,6 @@
 'use client'
 
-import { Dispatch, ReactNode, useReducer, useRef } from "react"
+import { Dispatch, ReactNode, SetStateAction, useReducer, useRef, useState } from "react"
 
 // Custom types.
 import type { TChoice, TQuestion, TQuizData } from "@/utils/definition"
@@ -35,20 +35,11 @@ type TChoiceProps = {
   quizData: TQuizData
   choice: TChoice
   prefixSymbol: string
-  // numOfQuestion: number
-  // hasSelectedAnswer: boolean
-  // selectedAnswerState: {
-  //   selectedAnswer: TChoice | null
-  //   onDispatch1: Dispatch<TSelectedAnsAction>
-  // }
-  // selectedAnswersArrayState: {
-  //   selectedAnswersArray: Array<TChoice>,
-  //   onDispatch2: Dispatch<TSelectedAnswersAction>
-  // }
   questionData: {
-    numOfQuestion: number
+    questionId: string
+    numOfAnswers: number
     score: number
-    hasSelectedAnswer: boolean
+    hasSelectedAnswer: boolean    
     selectedAnswerState: {
       selectedAnswer: TChoice | null
       onDispatch1: Dispatch<TSelectedAnsAction>
@@ -57,34 +48,47 @@ type TChoiceProps = {
       selectedAnswersArray: Array<TChoice>,
       onDispatch2: Dispatch<TSelectedAnswersAction>
     }
+    questionIncluded: {
+      isQuestionIncluded: boolean
+      onSetIsQuestionIncluded: Dispatch<SetStateAction<boolean>>
+    }
   }
 }
 
 
-const Question = ({ question, quizData }: TQuestionProps) => {
-  const {quizStatus, onSetQuizStatus} = quizData.quizState
-  
+const Question = ({ question, quizData }: TQuestionProps) => {  
     // Choose the reducer function based on the number of correct answers.  
   const [selectedAnswer, dispatch1] = useReducer(answerReducer, null)
   const [selectedAnswersArray, dispatch2] = useReducer(answersReducer, [])
+  // Determine if question already included in the quiz component's 
+  // questionsResult state.
+  const [isQuestionIncluded, setIsQuestionIncluded] = useState(false)
 
-  // Determine the score
-  let score = 0
+  // Quiz component data.
+  const {quizStatus} = quizData.quizState  
+
+
   // Determine if user has selected an answer(s).
   let hasSelectedAnswer = false
+  // Determine the score
+  let score = 0
 
   // For question that has multiple correct answers.
   if (question.answers > 1) {
     // If user has selected an answer.
-    if (selectedAnswersArray.length !== 0) hasSelectedAnswer = true
-
-    // Determine the score.
-    // Reset the score first.
-    score = 0
-    selectedAnswersArray.map(answer => {
-      answer.isCorrect && score++
-    })
-    score = Number((score / question.answers).toFixed(2))
+    if (selectedAnswersArray.length) {
+      // If selectedAnswersArray is not zero, then user has chosen an answer.
+      hasSelectedAnswer = true
+    
+      // Determine the score.
+      // Reset the score first.
+      score = 0
+      // Then get the total score.
+      selectedAnswersArray.map(answer => {
+        answer.isCorrect && score++
+      })
+      score = Number((score / question.answers).toFixed(2))
+    }    
   }
   // For question that has only one correct answer.
   if (question.answers === 1) {
@@ -94,6 +98,7 @@ const Question = ({ question, quizData }: TQuestionProps) => {
     // Determine the score.
     // Reset the score first.
     score = 0
+    // If the selected answer is correct, increment the score by 1.
     selectedAnswer?.isCorrect && score++
   }  
 
@@ -108,6 +113,7 @@ const Question = ({ question, quizData }: TQuestionProps) => {
 
   return (
     <>
+      <p>{`Selected answer: ${selectedAnswer?.prefixSymbol}`}</p>
 
       {/* Display Question */}
       <div
@@ -150,17 +156,15 @@ const Question = ({ question, quizData }: TQuestionProps) => {
                   key={choice.prefixSymbol} 
                   quizData={quizData}
                   prefixSymbol={getPrefixSymbols("letters", index)} 
-                  choice={choice}
-                  // numOfQuestion={question.answers}
-                  // hasSelectedAnswer={hasSelectedAnswer}
-                  // selectedAnswerState={{selectedAnswer, onDispatch1: dispatch1}}
-                  // selectedAnswersArrayState={{selectedAnswersArray, onDispatch2: dispatch2}}
+                  choice={choice}                  
                   questionData={{
-                    numOfQuestion: question.answers,
+                    questionId: question.id,
+                    numOfAnswers: question.answers,
                     score,
-                    hasSelectedAnswer,
+                    hasSelectedAnswer,                    
                     selectedAnswerState: {selectedAnswer, onDispatch1: dispatch1},
-                    selectedAnswersArrayState:{selectedAnswersArray, onDispatch2: dispatch2}
+                    selectedAnswersArrayState:{selectedAnswersArray, onDispatch2: dispatch2},
+                    questionIncluded:{isQuestionIncluded, onSetIsQuestionIncluded: setIsQuestionIncluded}
                   }}
                 />
               index++
@@ -192,25 +196,29 @@ const Choice = ({
     questionData 
   }: TChoiceProps) => {
 
+  // Quiz component data.
   const {quizStatus, onSetQuizStatus} = quizData.quizState
   const {questionsResult, onSetQuestionsResult} = quizData.quizSelectedQuestions
-  // const {selectedAnswer, dispatch} = useSelectedChoiceContext()
+  // Qustion component data.
   const {
-    hasSelectedAnswer,
+    questionId,
+    hasSelectedAnswer,    
     score,
-    numOfQuestion,
+    numOfAnswers,
     selectedAnswerState,
-    selectedAnswersArrayState
+    selectedAnswersArrayState,
+    questionIncluded
   } = questionData
+
   const {selectedAnswer, onDispatch1} = selectedAnswerState
   const {selectedAnswersArray, onDispatch2} = selectedAnswersArrayState
-  // console.log('selected array : ', selectedAnswersArray)
-  // console.log('selected : ', selectedAnswer)
+  const {isQuestionIncluded, onSetIsQuestionIncluded} = questionIncluded
+
   
   // Determine if this choice is selected.
   let selected = false
   // For question that has multiple correct answers.
-  if (numOfQuestion > 1) {
+  if (numOfAnswers > 1) {
     const found = selectedAnswersArray.find(c => c.prefixSymbol === prefixSymbol)
     // found returns undefined if none of the elements satisfies the
     // condition. So used the !! operator to make undefined a boolean false
@@ -218,12 +226,10 @@ const Choice = ({
     selected = !!found
   }  
   // For question that has only one answer.
-  if (numOfQuestion === 1) {
+  if (numOfAnswers === 1) {
     selected = selectedAnswer?.prefixSymbol === prefixSymbol
   }
 
-
-  // console.log('has selected: ', hasSelectedAnswer)
 
   return (
     <button
@@ -237,7 +243,13 @@ const Choice = ({
       }
       )}
       onClick={() => {
-        // TODO: Make each question send to quiz comp.
+        /**
+         * This event handler function has two tasks.
+         * 1. Set the selected answer in the Question component's 
+         *    states(selectedAnswer and selectedAnswersArray).
+         * 2. Include the question(question id and score) in the
+         *    Quiz component's questionsResult.
+        */
 
         // Reset the quiz state first.
         onSetQuizStatus("answering")     
@@ -245,17 +257,57 @@ const Choice = ({
         // Set the selected answer.
 
         // For question that has multiple correct answers.
-        if (numOfQuestion > 1) {
+        if (numOfAnswers > 1) {
           // If choice already selected and clicked (selected answer) again.
-          if (selected) return onDispatch2({type: "removed_answer", payload: {prefixSymbol}})
+          if (selected) {
+            // Removed the answer.
+            onDispatch2({type: "removed_answer", payload: {prefixSymbol}})
 
+            // If there's only one item left in the selectedAnswersArray 
+            // state and it's removed, then that means user hasn't
+            // selected an answer.
+            if (selectedAnswersArray.length === 1) {
+              // Removed the question in the questionsResult state of 
+              // quiz component.
+              onSetQuestionsResult({type: "removed_question", payload: {questionId}})
+              // Update the state isQuestionIncluded.              
+              onSetIsQuestionIncluded(false)
+            }
+            return
+          }
 
           // Otherwise not yet selected.
-          return onDispatch2({type:"added_answer", payload: {...choice, prefixSymbol}})
+          onDispatch2({type:"added_answer", payload: {...choice, prefixSymbol}})
+
+          // Add the question result(question id and score) to questionsResult state of quiz component
+          // if user has selected an answer.
+          if (isQuestionIncluded) {
+            // Changed the question's payload results.
+            return onSetQuestionsResult({type: "changed_question", payload: {questionId, score}})                    
+          }
+          // Otherwise not yet included.                    
+          onSetQuestionsResult({type: "added_question", payload: {questionId, score}})  
+          // Update the state isQuestionIncluded.
+          return  onSetIsQuestionIncluded(true)
         }
         
-        // For question that has one correct answer only.
-        return onDispatch1({type:"changed_selection", payload: {...choice, prefixSymbol}})
+
+        // Everything below is for question that has one correct answer only.
+        
+        // Set the selected answer for selectedAnswer state.
+        onDispatch1({type:"changed_selection", payload: {...choice, prefixSymbol}})
+        console.log('Is question included: ', isQuestionIncluded)
+        // Add the question result(question id and score) to questionsResult state of quiz component.                        
+        if (isQuestionIncluded) {
+          console.log('ey')
+          // Changed the question's payload results.
+          return onSetQuestionsResult({type: "changed_question", payload: {questionId, score}})                    
+        }
+        
+        // Otherwise not yet included.
+        onSetQuestionsResult({type: "added_question", payload: {questionId, score}})
+        // Update the state isQuestionIncluded.
+        return  onSetIsQuestionIncluded(true)
       }}
     >
 

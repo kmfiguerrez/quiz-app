@@ -28,7 +28,7 @@ type TQuestions = Array<TQuestion>
 type TQuizStatus = 'answering' | 'checked'
 
 // Quiz component holds this data
-type TQuestionsResult = {
+type TQuestionResult = {
   questionId: string
   score: number
 }
@@ -39,7 +39,7 @@ type TQuizData = {
     onSetQuizStatus: Dispatch<SetStateAction<TQuizStatus>>
   }
   quizSelectedQuestions: {
-    questionsResult: Array<TQuestionsResult>
+    questionsResult: Array<TQuestionResult>
     onSetQuestionsResult: Dispatch<TSelectedQuestionAction>
   }  
 }
@@ -52,5 +52,5 @@ export type {
   TChoice,
   TQuizStatus,
   TQuizData,
-  TQuestionsResult
+  TQuestionResult
 }

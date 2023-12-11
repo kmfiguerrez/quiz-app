@@ -1,4 +1,4 @@
-import type { TQuestionsResult } from "@/utils/definition"
+import type { TQuestionResult } from "@/utils/definition"
 
 type TRemoveAction = {
   type: 'removed_question'
@@ -8,19 +8,28 @@ type TRemoveAction = {
 }
 
 type TSelectedQuestionAction = TRemoveAction | {
-  type: 'added_question'
-  payload: TQuestionsResult
+  type: 'added_question' | 'changed_question'
+  payload: TQuestionResult
 }
 
-type TSelectedQuestions = Array<TQuestionsResult>
+type TSelectedQuestions = Array<TQuestionResult>
 
-const questionsReducer = (selectedQuestions: TSelectedQuestions, action: TSelectedQuestionAction): Array<TQuestionsResult> => {
+const questionsReducer = (selectedQuestions: TSelectedQuestions, action: TSelectedQuestionAction): Array<TQuestionResult> => {
   switch(action.type) {
     case 'added_question': {
       return [
         ...selectedQuestions,
         action.payload
       ]
+    }
+    case 'changed_question': {
+      return selectedQuestions.map(question => {
+        if (question.questionId === action.payload.questionId) {
+          return action.payload
+        } else {
+          return question
+        }
+      })
     }
     case 'removed_question': {
       return selectedQuestions.filter(question => question.questionId !== action.payload.questionId)

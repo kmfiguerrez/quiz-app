@@ -22,21 +22,14 @@ const Quiz = () => {
   const [quizStatus, setQuizStatus] = useState<TQuizStatus>('answering')
   // questionResult state will be used to calculate the total score.
   const [questionsResult, dispatch] = useReducer(questionsReducer, [])
+  console.log('questions included: ', questionsResult)
 
   return (
     <SelectedAnswerProvider>
       
-      {/* Status Message*/}
-      {/* {quizStatus === "checked" && 
-        <p
-          className={clsx("text-lg text-center", {
-            "text-green-500": isAnsCorrect,
-            "text-red-500": !isAnsCorrect
-          })}
-        >
-          {isAnsCorrect ? "Correct" : "Wrong"}
-        </p>
-      } */}
+      <p>
+        {`Selected questions: ${questionsResult.map(q => q.questionId)}`}
+      </p>
 
       <ul className="list-decimal">
         {Questions.map(question => (
