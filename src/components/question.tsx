@@ -106,7 +106,7 @@ const Question = ({ question, quizData }: TQuestionProps) => {
   let index = 0
 
   // For error message.
-  const showErrorMessage = quizStatus === "checked" && !hasSelectedAnswer
+  const showErrorMessage = (quizStatus === "checked" || quizStatus === "answering") && !hasSelectedAnswer
   
   // Get span with letter f.
   const letterF = useRef(null)
@@ -198,7 +198,7 @@ const Choice = ({
 
   // Quiz component data.
   const {quizStatus, onSetQuizStatus} = quizData.quizState
-  const {questionsResult, onSetQuestionsResult} = quizData.quizSelectedQuestions
+  const {onSetQuestionsResult} = quizData.quizSelectedQuestions
   // Qustion component data.
   const {
     questionId,
@@ -250,9 +250,9 @@ const Choice = ({
          * 2. Include the question(question id and score) in the
          *    Quiz component's questionsResult.
         */
-
-        // Reset the quiz state first.
-        onSetQuizStatus("answering")     
+        
+        // Update the quiz state.
+        onSetQuizStatus("answering")
       
         // Set the selected answer.
 
@@ -296,7 +296,7 @@ const Choice = ({
         
         // Set the selected answer for selectedAnswer state.
         onDispatch1({type:"changed_selection", payload: {...choice, prefixSymbol}})
-        console.log('Is question included: ', isQuestionIncluded)
+        
         // Add the question result(question id and score) to questionsResult state of quiz component.                        
         if (isQuestionIncluded) {
           console.log('ey')

@@ -25,7 +25,7 @@ type TQuestion = {
 
 type TQuestions = Array<TQuestion>
 
-type TQuizStatus = 'answering' | 'checked'
+type TQuizStatus = 'listing' | 'answering' | 'checked'
 
 // Quiz component holds this data
 type TQuestionResult = {

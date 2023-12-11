@@ -19,7 +19,7 @@ import questionsReducer from "@/reducers/questions-reducer"
 
 
 const Quiz = () => {
-  const [quizStatus, setQuizStatus] = useState<TQuizStatus>('answering')
+  const [quizStatus, setQuizStatus] = useState<TQuizStatus>('listing')
   // questionResult state will be used to calculate the total score.
   const [questionsResult, dispatch] = useReducer(questionsReducer, [])
   console.log('questions included: ', questionsResult)
@@ -50,7 +50,7 @@ const Quiz = () => {
       <button
         onClick={() => {
           // Reset the status.
-          setQuizStatus("answering")
+          setQuizStatus("listing")
 
           // Set status.
           setQuizStatus('checked')      
