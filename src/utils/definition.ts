@@ -25,7 +25,7 @@ type TQuestion = {
 
 type TQuestions = Array<TQuestion>
 
-type TQuizStatus = 'listing' | 'answering' | 'checked'
+type TQuizStatus = 'answering' | 'checked'
 
 // Quiz component holds this data
 type TQuestionResult = {
@@ -41,7 +41,8 @@ type TQuizData = {
   quizSelectedQuestions: {
     questionsResult: Array<TQuestionResult>
     onSetQuestionsResult: Dispatch<TSelectedQuestionAction>
-  }  
+  }
+  hasChecked: boolean  
 }
 
 

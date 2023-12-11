@@ -65,8 +65,8 @@ const Question = ({ question, quizData }: TQuestionProps) => {
   const [isQuestionIncluded, setIsQuestionIncluded] = useState(false)
 
   // Quiz component data.
-  const {quizStatus} = quizData.quizState  
-
+  const {quizStatus} = quizData.quizState
+  
 
   // Determine if user has selected an answer(s).
   let hasSelectedAnswer = false
@@ -106,7 +106,7 @@ const Question = ({ question, quizData }: TQuestionProps) => {
   let index = 0
 
   // For error message.
-  const showErrorMessage = (quizStatus === "checked" || quizStatus === "answering") && !hasSelectedAnswer
+  const showErrorMessage = quizData.hasChecked && !hasSelectedAnswer
   
   // Get span with letter f.
   const letterF = useRef(null)
@@ -251,8 +251,8 @@ const Choice = ({
          *    Quiz component's questionsResult.
         */
         
-        // Update the quiz state.
-        onSetQuizStatus("answering")
+        // Update the quiz state only if the check button has been clicked.
+        quizData.hasChecked && onSetQuizStatus("answering")
       
         // Set the selected answer.
 
