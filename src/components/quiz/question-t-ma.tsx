@@ -52,7 +52,6 @@ const QuestionTMA = ({question, quizData}: TQuestionTSAProps) => {
   // Quiz component data.
   const {quizStatus} = quizData.quizState
 
-
   // Determine if user has selected an answer(s).
   let hasSelectedAnswer = !!selectedAnswers.length
 
@@ -77,14 +76,14 @@ const QuestionTMA = ({question, quizData}: TQuestionTSAProps) => {
         {/* Error Message */}
         {showErrorMessage &&
           <span className="text-red-400">
-            Select an answer.
+            {` - Select ${question.answers} answer.`}
           </span>
         }
 
         {/* Show score */}
         {quizStatus === "checked" && !showErrorMessage &&
           <span className="text-blue-500">
-            {` ${score} point`}
+            {` - ${score} point`}
           </span>
         }
       </p>
@@ -108,11 +107,9 @@ const QuestionTMA = ({question, quizData}: TQuestionTSAProps) => {
                 selectedAnswersState: {selectedAnswers, onDispatch: dispatch}
               }}
             />
-
             index++
             return c
           })
-
         }
       </ChoicesContainer>
     </div>
@@ -141,6 +138,8 @@ const Choice = ({choice, prefixSymbol, questionData, quizData}: TChoiceProps) =>
   // Determine if this choice is selected.
   let selected = !!(selectedAnswers.find(answer => answer.prefixSymbol === prefixSymbol))
   
+  // Determine if it's time to check the answers.
+  const checkedAnswers = quizStatus === "checked" && hasSelectedAnswer
 
   return (
     <button
@@ -149,8 +148,9 @@ const Choice = ({choice, prefixSymbol, questionData, quizData}: TChoiceProps) =>
       disabled={quizStatus === 'checked' && hasSelectedAnswer}
       className={cn("flex items-center hover:bg-zinc-800/90 p-1 rounded-md max-w-max pe-3",      
       {
-        "text-green-500": quizStatus === "checked" && hasSelectedAnswer && choice.isCorrect,
-        "text-red-500": quizStatus === "checked" && hasSelectedAnswer && !choice.isCorrect        
+        "text-green-500": checkedAnswers && choice.isCorrect,
+        "text-red-500": checkedAnswers && !choice.isCorrect,
+        "space-y-2": checkedAnswers       
       }
       )}    
       onClick={() => {

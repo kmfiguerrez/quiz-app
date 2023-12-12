@@ -10,8 +10,8 @@ import QuestionTSA from "./question-t-sa"
 import QuestionTMA from "./question-t-ma"
 
 // Data.
-import Questions from '@/utils/data'
-import MyCheckboxGroup from "../checkbox-group"
+import questions from '@/utils/data'
+
 
 
 // Custom types.
@@ -33,7 +33,7 @@ const Quiz = () => {
   const [hasChecked, sethasChecked] = useState(false)
   // console.log('score: ', totalScore)
 
-  const singleQuestion = [Questions[3]]
+  const singleQuestion = [questions[3]]
 
   
 
@@ -85,7 +85,7 @@ const Quiz = () => {
       </div>
 
       <ul className="list-decimal">
-        {singleQuestion.map(question => (
+        {questions.map(question => (
             <li>
               {/* Determine which Question component to use. */}
               {/* <Question 

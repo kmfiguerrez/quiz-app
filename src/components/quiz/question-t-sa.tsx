@@ -73,14 +73,14 @@ const QuestionTSA = ({question, quizData}: TQuestionTSAProps) => {
         {/* Error Message */}
         {showErrorMessage &&
           <span className="text-red-400">
-            Select an answer.
+            {` - Select an answer.`}
           </span>
         }
 
         {/* Show score */}
         {quizStatus === "checked" && !showErrorMessage &&
           <span className="text-blue-500">
-            {` ${score} point`}
+            {` - ${score} point`}
           </span>
         }
       </p>

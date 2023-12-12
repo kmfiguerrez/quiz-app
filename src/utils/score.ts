@@ -23,14 +23,19 @@ const getScore = (answer: TAnswer): number => {
     let correctSelectedAnswers = 0
 
     // If selected answers is empty, return 0.
-    if (!selectedAnswers.length) return score
+    if (!selectedAnswers.length) return 0
     
     // Get the number of selected correct and incorrect numbers.
     selectedAnswers.map(a => {
       a.isCorrect ? correctSelectedAnswers++ : incorrectSelectedAnswers++      
     })
-    // console.log('correct selected ans: ',correctSelectedAnswers)
-    score = Number((correctSelectedAnswers / correctAnswers).toFixed(2))
+
+    score = correctSelectedAnswers - incorrectSelectedAnswers
+
+    // If score is less than or equal zero, return 0.
+    if (score <= 0) return 0
+
+    score = Number((score / correctAnswers).toFixed(2))
     // console.log('score: ', score)
     return score
   }

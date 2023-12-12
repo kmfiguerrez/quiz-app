@@ -1,6 +1,6 @@
 import { TQuestions } from "./definition";
 
-const Questions: TQuestions = [
+const questions: TQuestions = [
   {
     id: '1',
     questionText: "In the LAN for a small office, some user devices connect to the "+
@@ -262,4 +262,4 @@ const Questions: TQuestions = [
 ]
 
 
-export default Questions
+export default questions
