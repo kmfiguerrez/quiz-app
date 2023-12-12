@@ -11,8 +11,8 @@ import type { TChoice, TColorVariants, TQuestion, TQuizData } from '@/utils/defi
 import answersReducer, { TSelectedAnswersAction } from '@/reducers/ma-reducer'
 
 // Custom SVG icons.
-import CheckIcon from "../svg/check-icon"
-import Xicon from "../svg/x-icon"
+import {CheckIcon, CheckIconSolid} from "../svg/check-icon"
+import {XiconSolid, Xicon} from "../svg/x-icon"
 
 // Custom utils.
 import cn from '@/utils/cn'
@@ -185,6 +185,9 @@ const Choice = ({choice, prefixSymbol, questionData, quizData}: TChoiceProps) =>
           // Remove the answer from the selected answers state.
           onDispatch({type: 'removed_answer', payload: {prefixSymbol}})
 
+          // Changed the payload: question's results.
+          onSetSelectedQuestions({type: 'changed_question', payload: {questionId, score: getScore({selectedAnswers: nextSelectedAnswers, correctAnswers: numOfCorrectAnswers})}})
+
           // If the user hasn't selected an answer, remove the question from the selected questions state.
           if (!nextSelectedAnswers.length) onSetSelectedQuestions({type: 'removed_question', payload: {questionId}})
 
@@ -207,11 +210,11 @@ const Choice = ({choice, prefixSymbol, questionData, quizData}: TChoiceProps) =>
 
       {/* Result symbol */}
       {quizStatus === "checked" && hasSelectedAnswer && choice.isCorrect &&
-        <CheckIcon />        
+        <CheckIconSolid />        
       }
 
       {quizStatus === "checked" && hasSelectedAnswer && !choice.isCorrect &&
-        <Xicon />        
+        <XiconSolid />        
       }
 
 

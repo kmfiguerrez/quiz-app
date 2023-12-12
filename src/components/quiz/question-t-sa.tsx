@@ -11,8 +11,8 @@ import type { TChoice, TColorVariants, TQuestion, TQuizData } from '@/utils/defi
 import answerReducer, { TSelectedAnsAction } from '@/reducers/sa-reducer'
 
 // Custom SVG icons.
-import CheckIcon from "../svg/check-icon"
-import Xicon from "../svg/x-icon"
+import {CheckIconSolid, CheckIcon} from "../svg/check-icon"
+import {XiconSolid, Xicon} from "../svg/x-icon"
 
 // Custom utils.
 import cn from '@/utils/cn'
@@ -190,11 +190,11 @@ const Choice = ({choice, prefixSymbol, questionData, quizData}: TChoiceProps) =>
 
       {/* Result symbol */}
       {quizStatus === "checked" && hasSelectedAnswer && choice.isCorrect &&
-        <CheckIcon />        
+        <CheckIconSolid />        
       }
 
       {quizStatus === "checked" && hasSelectedAnswer && !choice.isCorrect &&
-        <Xicon />        
+        <XiconSolid />        
       }
 
 
