@@ -12,8 +12,6 @@ import QuestionTMA from "./question-t-ma"
 // Data.
 import questions from '@/utils/data'
 
-
-
 // Custom types.
 import { TQuizStatus } from "@/utils/definition"
 import questionsReducer from "@/reducers/questions-reducer"
@@ -88,14 +86,6 @@ const Quiz = () => {
         {questions.map(question => (
             <li>
               {/* Determine which Question component to use. */}
-              {/* <Question 
-                question={question} 
-                quizData={{
-                  quizState: {quizStatus, onSetQuizStatus: setQuizStatus},
-                  quizSelectedQuestions: {selectedQuestions, onSetSelectedQuestions: dispatch},
-                  hasChecked
-                }}
-              /> */}
               {question.answers > 1 &&
                 <QuestionTMA
                   question={question}
@@ -117,8 +107,6 @@ const Quiz = () => {
                   }}
                 />
               }
-
-              {/* <MyCheckboxGroup question={Questions[0]} /> */}
             </li>
           ))
         }        
