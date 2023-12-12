@@ -264,9 +264,8 @@ const Choice = ({
             // Removed the answer.
             onDispatch2({type: "removed_answer", payload: {prefixSymbol}})     
 
-            // If there's only one item left in the selectedAnswersArray 
-            // state and it's removed, then that means user hasn't
-            // selected an answer.
+            // Remove the question from the list if user hasn't
+            // seleted an answer.
             if (!nextSelectedAnswersArray.length) {
               // Removed the question in the questionsResult state of 
               // quiz component.

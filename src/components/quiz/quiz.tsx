@@ -6,7 +6,8 @@ import { useReducer, useState } from "react"
 import SelectedAnswerProvider from "@/context/choice-provider"
 
 // Custom Components.
-import Question from "./question"
+import QuestionTSA from "./question-t-sa"
+import QuestionTMA from "./question-t-ma"
 
 // Data.
 import Questions from '@/utils/data'
@@ -19,7 +20,7 @@ import questionsReducer from "@/reducers/questions-reducer"
 
 // Custom utilities.
 import {getTotalScore} from "@/utils/score"
-import QuestionTSA from "./question-t-sa"
+
 
 
 const Quiz = () => {
@@ -32,7 +33,7 @@ const Quiz = () => {
   const [hasChecked, sethasChecked] = useState(false)
   // console.log('score: ', totalScore)
 
-  const singleQuestion = [Questions[0]]
+  const singleQuestion = [Questions[3]]
 
   
 
@@ -95,14 +96,27 @@ const Quiz = () => {
                   hasChecked
                 }}
               /> */}
-              <QuestionTSA
-                question={question}
-                quizData={{
-                  quizState: {quizStatus, onSetQuizStatus: setQuizStatus},
-                  quizSelectedQuestions: {selectedQuestions, onSetSelectedQuestions: dispatch},
-                  hasChecked
-                }}
-              />
+              {question.answers > 1 &&
+                <QuestionTMA
+                  question={question}
+                  quizData={{
+                    quizState: {quizStatus, onSetQuizStatus: setQuizStatus},
+                    quizSelectedQuestions: {selectedQuestions, onSetSelectedQuestions: dispatch},
+                    hasChecked
+                  }}
+                />
+              }
+
+              {question.answers === 1 &&
+                <QuestionTSA
+                  question={question}
+                  quizData={{
+                    quizState: {quizStatus, onSetQuizStatus: setQuizStatus},
+                    quizSelectedQuestions: {selectedQuestions, onSetSelectedQuestions: dispatch},
+                    hasChecked
+                  }}
+                />
+              }
 
               {/* <MyCheckboxGroup question={Questions[0]} /> */}
             </li>
