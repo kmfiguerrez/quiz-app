@@ -5,7 +5,7 @@ import { Dispatch, useReducer } from 'react'
 import ChoicesContainer from './choices-container'
 
 // Custom types.
-import type { TChoice, TQuestion, TQuizData } from '@/utils/definition'
+import type { TChoice, TColorVariants, TQuestion, TQuizData } from '@/utils/definition'
 
 // Reducer function.
 import answerReducer, { TSelectedAnsAction } from '@/reducers/sa-reducer'
@@ -21,9 +21,11 @@ import { getScore } from '@/utils/score'
 
 
 
+
 type TQuestionTSAProps = {
   question: TQuestion
   quizData: TQuizData
+  colorVariant?: TColorVariants
 }
 
 type TChoiceProps = {
@@ -32,7 +34,8 @@ type TChoiceProps = {
   prefixSymbol: string
   questionData: {
     questionId: string   
-    hasSelectedAnswer: boolean    
+    hasSelectedAnswer: boolean
+    colorVariant?: TColorVariants  
     selectedAnswerState: {
       selectedAnswer: TChoice | null
       onDispatch: Dispatch<TSelectedAnsAction>
@@ -43,7 +46,7 @@ type TChoiceProps = {
 
 
 // TSA means Type Single Answer.
-const QuestionTSA = ({question, quizData}: TQuestionTSAProps) => {
+const QuestionTSA = ({question, quizData, colorVariant}: TQuestionTSAProps) => {
   const [selectedAnswer, dispatch] = useReducer(answerReducer, null)
 
   // Quiz component data.
@@ -100,6 +103,7 @@ const QuestionTSA = ({question, quizData}: TQuestionTSAProps) => {
               questionData={{
                 questionId: question.id,                
                 hasSelectedAnswer,
+                colorVariant,
                 selectedAnswerState: {selectedAnswer, onDispatch: dispatch}
               }}
             />
@@ -124,7 +128,8 @@ const Choice = ({choice, prefixSymbol, questionData, quizData}: TChoiceProps) =>
   // Qustion component data.  
   const {
     questionId,
-    hasSelectedAnswer,        
+    hasSelectedAnswer,
+    colorVariant='white',        
     selectedAnswerState,        
   } = questionData  
   const {selectedAnswer, onDispatch} = selectedAnswerState
@@ -191,13 +196,22 @@ const Choice = ({choice, prefixSymbol, questionData, quizData}: TChoiceProps) =>
 
 
       {/* Prefix symbol */}
-      <span
-        
+      <span        
         className={cn(
-          "ms-1 me-3 rounded-full bg-gray-800 px-2 align-middle text-blue-500",
+          "ms-1 me-3 rounded-full bg-gray-800 px-2 align-middle",
           {
-            "outline outline-2 outline-offset-2 outline-blue-500 ": selected,
-            "ms-2": quizStatus === "checked" && hasSelectedAnswer
+            "ms-2": quizStatus === "checked" && hasSelectedAnswer,
+            "outline outline-2 outline-offset-2 outline-white": selected && colorVariant,
+            "text-pink-500": colorVariant === 'pink',
+            "outline-pink-500": selected && colorVariant === 'pink',
+            "text-blue-500": colorVariant === 'blue',
+            "outline-blue-500": selected && colorVariant === 'blue',
+            "text-yellow-500": colorVariant === 'yellow',
+            "outline-yellow-500": selected && colorVariant === 'yellow',
+            "text-orange-500": colorVariant === 'orange',
+            "outline-orange-500": selected && colorVariant === 'orange',
+            "text-purple-500": colorVariant === 'purple',
+            "outline-purple-500": selected && colorVariant === 'purple',
           }
         )}
       >

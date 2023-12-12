@@ -5,7 +5,7 @@ import { Dispatch, useReducer } from 'react'
 import ChoicesContainer from './choices-container'
 
 // Custom types.
-import type { TChoice, TQuestion, TQuizData } from '@/utils/definition'
+import type { TChoice, TColorVariants, TQuestion, TQuizData } from '@/utils/definition'
 
 // Reducer function.
 import answersReducer, { TSelectedAnswersAction } from '@/reducers/ma-reducer'
@@ -26,6 +26,7 @@ import { getNextSelectedAnswers } from '@/utils/next-state'
 type TQuestionTSAProps = {
   question: TQuestion
   quizData: TQuizData
+  colorVariant?: TColorVariants
 }
 
 type TChoiceProps = {
@@ -35,6 +36,7 @@ type TChoiceProps = {
   questionData: {
     questionId: string   
     hasSelectedAnswer: boolean
+    colorVariant?: TColorVariants  
     numOfCorrectAnswers: number    
     selectedAnswersState: {
       selectedAnswers: Array<TChoice>
@@ -46,7 +48,7 @@ type TChoiceProps = {
 
 
 // TSA means Type Single Answer.
-const QuestionTMA = ({question, quizData}: TQuestionTSAProps) => {
+const QuestionTMA = ({question, quizData, colorVariant}: TQuestionTSAProps) => {
   const [selectedAnswers, dispatch] = useReducer(answersReducer, [])
 
   // Quiz component data.
@@ -101,7 +103,8 @@ const QuestionTMA = ({question, quizData}: TQuestionTSAProps) => {
               prefixSymbol={prefixSymbol}
               quizData={quizData}
               questionData={{
-                questionId: question.id,                
+                questionId: question.id,
+                colorVariant,                
                 hasSelectedAnswer,
                 numOfCorrectAnswers: question.answers,
                 selectedAnswersState: {selectedAnswers, onDispatch: dispatch}
@@ -128,6 +131,7 @@ const Choice = ({choice, prefixSymbol, questionData, quizData}: TChoiceProps) =>
     questionId,
     hasSelectedAnswer,
     numOfCorrectAnswers,
+    colorVariant='white',
     selectedAnswersState,        
   } = questionData  
   const {selectedAnswers, onDispatch} = selectedAnswersState
@@ -148,9 +152,9 @@ const Choice = ({choice, prefixSymbol, questionData, quizData}: TChoiceProps) =>
       disabled={quizStatus === 'checked' && hasSelectedAnswer}
       className={cn("flex items-center hover:bg-zinc-800/90 p-1 rounded-md max-w-max pe-3",      
       {
+        "space-y-2": hasSelectedAnswer || checkedAnswers,
         "text-green-500": checkedAnswers && choice.isCorrect,
-        "text-red-500": checkedAnswers && !choice.isCorrect,
-        "space-y-2": checkedAnswers       
+        "text-red-500": checkedAnswers && !choice.isCorrect,            
       }
       )}    
       onClick={() => {
@@ -212,11 +216,21 @@ const Choice = ({choice, prefixSymbol, questionData, quizData}: TChoiceProps) =>
       <span
         
         className={cn(
-          "ms-1 me-3 rounded-full bg-gray-800 px-2 align-middle text-blue-500",
+          "ms-1 me-3 rounded-full bg-gray-800 px-2 align-middle",
           {
-            "outline outline-2 outline-offset-2 outline-blue-500 ": selected,
-            "ms-2": quizStatus === "checked" && hasSelectedAnswer
-          }
+            "ms-2": quizStatus === "checked" && hasSelectedAnswer,
+            "outline outline-2 outline-offset-2 outline-white": selected && colorVariant,
+            "text-pink-500": colorVariant === 'pink',
+            "outline-pink-500": selected && colorVariant === 'pink',
+            "text-blue-500": colorVariant === 'blue',
+            "outline-blue-500": selected && colorVariant === 'blue',
+            "text-yellow-500": colorVariant === 'yellow',
+            "outline-yellow-500": selected && colorVariant === 'yellow',
+            "text-orange-500": colorVariant === 'orange',
+            "outline-orange-500": selected && colorVariant === 'orange',
+            "text-purple-500": colorVariant === 'purple',
+            "outline-purple-500": selected && colorVariant === 'purple',
+          }                      
         )}
       >
         {prefixSymbol}

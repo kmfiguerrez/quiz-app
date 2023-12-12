@@ -5,6 +5,8 @@ type TLetter = "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" |
                 "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" |
                 "t" | "u" | "v" | "w" | "x" | "y" | "z"
 
+type TColorVariants = "blue" | "orange" | "pink" | "yellow" | "purple" | "white"
+
 // mc stands for: multiple choice, and tof for: true or false
 type TQuestionType = 'mc' | "tof"
 
@@ -53,5 +55,6 @@ export type {
   TChoice,
   TQuizStatus,
   TQuizData,
-  TQuestionResult
+  TQuestionResult,
+  TColorVariants
 }

@@ -13,7 +13,7 @@ import QuestionTMA from "./question-t-ma"
 import questions from '@/utils/data'
 
 // Custom types.
-import { TQuizStatus } from "@/utils/definition"
+import { TColorVariants, TQuizStatus } from "@/utils/definition"
 import questionsReducer from "@/reducers/questions-reducer"
 
 // Custom utilities.
@@ -30,6 +30,8 @@ const Quiz = () => {
   // Determine if the user has clicked the checked button.
   const [hasChecked, sethasChecked] = useState(false)
   // console.log('score: ', totalScore)
+  // Color variants for prefix symbols, default is white.
+  const [colorVariant, setColorVariant] = useState<TColorVariants>('orange')
 
   const singleQuestion = [questions[3]]
 
@@ -89,6 +91,7 @@ const Quiz = () => {
               {question.answers > 1 &&
                 <QuestionTMA
                   question={question}
+                  colorVariant={colorVariant}
                   quizData={{
                     quizState: {quizStatus, onSetQuizStatus: setQuizStatus},
                     quizSelectedQuestions: {selectedQuestions, onSetSelectedQuestions: dispatch},
@@ -100,6 +103,7 @@ const Quiz = () => {
               {question.answers === 1 &&
                 <QuestionTSA
                   question={question}
+                  colorVariant={colorVariant}
                   quizData={{
                     quizState: {quizStatus, onSetQuizStatus: setQuizStatus},
                     quizSelectedQuestions: {selectedQuestions, onSetSelectedQuestions: dispatch},
