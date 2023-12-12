@@ -1,4 +1,4 @@
-import { TSelectedQuestionAction } from "@/reducers/questions-reducer"
+import type { TSelectedQuestionAction } from "@/reducers/questions-reducer"
 import { Dispatch, SetStateAction } from "react"
 
 type TLetter = "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" |
@@ -17,7 +17,7 @@ type TChoice = {
 
 type TQuestion = {
   id: string
-  question: string
+  questionText: string
   choices: Array<TChoice>
   type: TQuestionType
   answers: number
@@ -39,8 +39,8 @@ type TQuizData = {
     onSetQuizStatus: Dispatch<SetStateAction<TQuizStatus>>
   }
   quizSelectedQuestions: {
-    questionsResult: Array<TQuestionResult>
-    onSetQuestionsResult: Dispatch<TSelectedQuestionAction>
+    selectedQuestions: Array<TQuestionResult>
+    onSetSelectedQuestions: Dispatch<TSelectedQuestionAction>
   }
   hasChecked: boolean  
 }

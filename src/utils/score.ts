@@ -1,15 +1,20 @@
 import type { TChoice, TQuestionResult } from "./definition";
 
-type TAnswers = {
+type TMultipleAnswer = {
   selectedAnswers: Array<TChoice>
   correctAnswers: number
 }
 
-type TAnswer = TAnswers | TChoice
+type TSingleAnswer = TChoice | null
+
+type TAnswer = TMultipleAnswer | TSingleAnswer
 
 
 const getScore = (answer: TAnswer): number => {
   let score = 0
+
+    // If answer is null or undefined, return 0.
+    if (!answer) return score
 
   // For multiple correct answers.
   if ("selectedAnswers" in answer)  {    
@@ -17,7 +22,7 @@ const getScore = (answer: TAnswer): number => {
     let incorrectSelectedAnswers = 0
     let correctSelectedAnswers = 0
 
-    // If selected answers is empty.
+    // If selected answers is empty, return 0.
     if (!selectedAnswers.length) return score
     
     // Get the number of selected correct and incorrect numbers.

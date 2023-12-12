@@ -10,7 +10,7 @@ import Question from "./question"
 
 // Data.
 import Questions from '@/utils/data'
-import MyCheckboxGroup from "./checkbox-group"
+import MyCheckboxGroup from "../checkbox-group"
 
 
 // Custom types.
@@ -19,17 +19,22 @@ import questionsReducer from "@/reducers/questions-reducer"
 
 // Custom utilities.
 import {getTotalScore} from "@/utils/score"
+import QuestionTSA from "./question-t-sa"
 
 
 const Quiz = () => {
   const [quizStatus, setQuizStatus] = useState<TQuizStatus>('answering')
   // questionResult state will be used to calculate the total score.
-  const [questionsResult, dispatch] = useReducer(questionsReducer, [])  
+  const [selectedQuestions, dispatch] = useReducer(questionsReducer, [])  
   const [error, setError] = useState('')
   const [totalScore, setTotalScore] = useState(0)
   // Determine if the user has clicked the checked button.
   const [hasChecked, sethasChecked] = useState(false)
   // console.log('score: ', totalScore)
+
+  const singleQuestion = [Questions[0]]
+
+  
 
   return (
     <SelectedAnswerProvider>
@@ -57,8 +62,8 @@ const Quiz = () => {
           
           // If everything is ok.
           // Calculate the total score.
-          console.log('questions: ', questionsResult)
-          setTotalScore(getTotalScore(questionsResult))
+          console.log('questions: ', selectedQuestions)
+          setTotalScore(getTotalScore(selectedQuestions))
         }}
       >
         Check
@@ -68,7 +73,7 @@ const Quiz = () => {
       
       <div className="flex justify-between">
         <p>
-          {`Selected questions: ${questionsResult.map(q => q.questionId)}`}
+          {`Selected questions: ${selectedQuestions.map(q => q.questionId)}`}
         </p>
 
         <p>{`State: ${quizStatus}`}</p>
@@ -79,16 +84,26 @@ const Quiz = () => {
       </div>
 
       <ul className="list-decimal">
-        {Questions.map(question => (
+        {singleQuestion.map(question => (
             <li>
-              <Question 
+              {/* Determine which Question component to use. */}
+              {/* <Question 
                 question={question} 
                 quizData={{
                   quizState: {quizStatus, onSetQuizStatus: setQuizStatus},
-                  quizSelectedQuestions: {questionsResult, onSetQuestionsResult: dispatch},
+                  quizSelectedQuestions: {selectedQuestions, onSetSelectedQuestions: dispatch},
+                  hasChecked
+                }}
+              /> */}
+              <QuestionTSA
+                question={question}
+                quizData={{
+                  quizState: {quizStatus, onSetQuizStatus: setQuizStatus},
+                  quizSelectedQuestions: {selectedQuestions, onSetSelectedQuestions: dispatch},
                   hasChecked
                 }}
               />
+
               {/* <MyCheckboxGroup question={Questions[0]} /> */}
             </li>
           ))
