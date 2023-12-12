@@ -1,5 +1,5 @@
 
-import { Dispatch, useReducer } from 'react'
+import { Dispatch, useReducer, useRef } from 'react'
 
 // Shared component.
 import ChoicesContainer from './choices-container'
@@ -149,6 +149,11 @@ const Choice = ({choice, prefixSymbol, questionData, quizData}: TChoiceProps) =>
   // Determine if it's time to check the answers.
   const checkedAnswers = quizStatus === "checked" && hasSelectedAnswer
 
+  // Find letter f.
+  const spanElement = useRef<HTMLButtonElement>(null)
+  const isLettterF = spanElement.current?.firstChild?.textContent?.trim() === 'f'
+  
+
   return (
     <button
       // Disable only if user has selected an answer and quiz component
@@ -232,7 +237,7 @@ const Choice = ({choice, prefixSymbol, questionData, quizData}: TChoiceProps) =>
 
       {/* Prefix symbol */}
       <span
-        
+        ref={spanElement}
         className={cn(
           "ms-1 me-3 rounded-full bg-gray-800 px-2 align-middle",
           {
@@ -248,6 +253,7 @@ const Choice = ({choice, prefixSymbol, questionData, quizData}: TChoiceProps) =>
             "outline-orange-500": selected && colorVariant === 'orange',
             "text-purple-500": colorVariant === 'purple',
             "outline-purple-500": selected && colorVariant === 'purple',
+            "leading-5": selected && isLettterF
           }                      
         )}
       >
