@@ -1,12 +1,19 @@
+import cn from "@/utils/cn"
 import { ReactNode } from "react"
 
 type TChoicesProps = {
   children: ReactNode
+  hasSelectedAnswer?: boolean
 }
 
-const ChoicesContainer = ({children}: TChoicesProps) => {
+const ChoicesContainer = ({children, hasSelectedAnswer}: TChoicesProps) => {
   return (
-    <div>
+    <div className={cn("pt-1",
+        {
+          "space-y-2": hasSelectedAnswer === true
+        }
+      )}
+    >
       {children}
     </div>
   )

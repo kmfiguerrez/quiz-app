@@ -26,6 +26,7 @@ type TQuestionTSAProps = {
   question: TQuestion
   quizData: TQuizData
   colorVariant?: TColorVariants
+  className?: string
 }
 
 type TChoiceProps = {
@@ -46,7 +47,7 @@ type TChoiceProps = {
 
 
 // TSA means Type Single Answer.
-const QuestionTSA = ({question, quizData, colorVariant}: TQuestionTSAProps) => {
+const QuestionTSA = ({question, quizData, colorVariant, className}: TQuestionTSAProps) => {
   const [selectedAnswer, dispatch] = useReducer(answerReducer, null)
 
   // Quiz component data.
@@ -66,7 +67,8 @@ const QuestionTSA = ({question, quizData, colorVariant}: TQuestionTSAProps) => {
   
   
   return (
-    <div>
+    <div className={cn("", className)}
+    >
       {/* Question text */}
       <p className="mb-1">
         <span>
@@ -141,17 +143,18 @@ const Choice = ({choice, prefixSymbol, questionData, quizData}: TChoiceProps) =>
   // Determine if this choice is selected.
   let selected = selectedAnswer?.prefixSymbol === prefixSymbol
   
-
+  // Determine if it's time to check the answers.
+  const checkedAnswers = quizStatus === "checked" && hasSelectedAnswer
 
   return (
     <button
       // Disable only if user has selected an answer and quiz component
       // has finished checking.
-      disabled={quizStatus === 'checked' && hasSelectedAnswer}
+      disabled={checkedAnswers}
       className={cn("flex items-center hover:bg-zinc-800/90 p-1 rounded-md max-w-max pe-3",      
       {
-        "text-green-500": quizStatus === "checked" && hasSelectedAnswer && choice.isCorrect,
-        "text-red-500": quizStatus === "checked" && hasSelectedAnswer && !choice.isCorrect        
+        "text-green-500": checkedAnswers && choice.isCorrect,
+        "text-red-500": checkedAnswers && hasSelectedAnswer && !choice.isCorrect        
       }
       )}    
       onClick={() => {
@@ -219,14 +222,9 @@ const Choice = ({choice, prefixSymbol, questionData, quizData}: TChoiceProps) =>
       </span>
 
       {/* Text */}
-      <span className={cn("",
-          {
-            
-          }
-        )}
-      >
+      <p className={cn("text-sm")}>
         {choice.text}
-      </span>
+      </p>
 
     </button>
   )

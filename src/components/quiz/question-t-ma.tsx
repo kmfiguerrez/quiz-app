@@ -27,6 +27,7 @@ type TQuestionTSAProps = {
   question: TQuestion
   quizData: TQuizData
   colorVariant?: TColorVariants
+  className?: string
 }
 
 type TChoiceProps = {
@@ -37,7 +38,7 @@ type TChoiceProps = {
     questionId: string   
     hasSelectedAnswer: boolean
     colorVariant?: TColorVariants  
-    numOfCorrectAnswers: number    
+    numOfCorrectAnswers: number
     selectedAnswersState: {
       selectedAnswers: Array<TChoice>
       onDispatch: Dispatch<TSelectedAnswersAction>
@@ -48,7 +49,7 @@ type TChoiceProps = {
 
 
 // TSA means Type Single Answer.
-const QuestionTMA = ({question, quizData, colorVariant}: TQuestionTSAProps) => {
+const QuestionTMA = ({question, quizData, colorVariant, className}: TQuestionTSAProps) => {
   const [selectedAnswers, dispatch] = useReducer(answersReducer, [])
 
   // Quiz component data.
@@ -66,9 +67,12 @@ const QuestionTMA = ({question, quizData, colorVariant}: TQuestionTSAProps) => {
   // Used for getting prefix symbols.
   let index = 0  
   
+
   
   return (
-    <div>
+    <div className={cn("", className)}
+    >
+
       {/* Question text */}
       <p className="mb-1">
         <span>
@@ -90,7 +94,7 @@ const QuestionTMA = ({question, quizData, colorVariant}: TQuestionTSAProps) => {
         }
       </p>
 
-      <ChoicesContainer>
+      <ChoicesContainer hasSelectedAnswer={hasSelectedAnswer}>
         {/* Passing choice component as a children prevents its
             parent component (choices) accepting props that it's
             never gonna use. See React context api doc.
@@ -105,7 +109,7 @@ const QuestionTMA = ({question, quizData, colorVariant}: TQuestionTSAProps) => {
               questionData={{
                 questionId: question.id,
                 colorVariant,                
-                hasSelectedAnswer,
+                hasSelectedAnswer,                
                 numOfCorrectAnswers: question.answers,
                 selectedAnswersState: {selectedAnswers, onDispatch: dispatch}
               }}
@@ -132,7 +136,7 @@ const Choice = ({choice, prefixSymbol, questionData, quizData}: TChoiceProps) =>
     hasSelectedAnswer,
     numOfCorrectAnswers,
     colorVariant='white',
-    selectedAnswersState,        
+    selectedAnswersState,       
   } = questionData  
   const {selectedAnswers, onDispatch} = selectedAnswersState
 
@@ -149,10 +153,9 @@ const Choice = ({choice, prefixSymbol, questionData, quizData}: TChoiceProps) =>
     <button
       // Disable only if user has selected an answer and quiz component
       // has finished checking.
-      disabled={quizStatus === 'checked' && hasSelectedAnswer}
+      disabled={checkedAnswers}
       className={cn("flex items-center hover:bg-zinc-800/90 p-1 rounded-md max-w-max pe-3",      
-      {
-        "space-y-2": hasSelectedAnswer || checkedAnswers,
+      {        
         "text-green-500": checkedAnswers && choice.isCorrect,
         "text-red-500": checkedAnswers && !choice.isCorrect,            
       }
@@ -237,14 +240,9 @@ const Choice = ({choice, prefixSymbol, questionData, quizData}: TChoiceProps) =>
       </span>
 
       {/* Text */}
-      <span className={cn("",
-          {
-            
-          }
-        )}
-      >
+      <p className={cn("text-sm")}>
         {choice.text}
-      </span>
+      </p>
 
     </button>
   )

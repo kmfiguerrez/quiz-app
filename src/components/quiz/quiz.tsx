@@ -18,6 +18,7 @@ import questionsReducer from "@/reducers/questions-reducer"
 
 // Custom utilities.
 import {getTotalScore} from "@/utils/score"
+import ColorVariantSwitcher from "../theme-switcher"
 
 
 
@@ -31,7 +32,7 @@ const Quiz = () => {
   const [hasChecked, sethasChecked] = useState(false)
   // console.log('score: ', totalScore)
   // Color variants for prefix symbols, default is white.
-  const [colorVariant, setColorVariant] = useState<TColorVariants>('orange')
+  const [colorVariant, setColorVariant] = useState<TColorVariants>('white')
 
   const singleQuestion = [questions[3]]
 
@@ -39,7 +40,7 @@ const Quiz = () => {
 
   return (
     <SelectedAnswerProvider>
-
+      <ColorVariantSwitcher selectedColor={colorVariant} onSetColorVariant={setColorVariant} />
       <button
         onClick={() => {
           // Reset the error status first.
@@ -97,6 +98,7 @@ const Quiz = () => {
                     quizSelectedQuestions: {selectedQuestions, onSetSelectedQuestions: dispatch},
                     hasChecked
                   }}
+                  className="mb-8"
                 />
               }
 
@@ -109,6 +111,7 @@ const Quiz = () => {
                     quizSelectedQuestions: {selectedQuestions, onSetSelectedQuestions: dispatch},
                     hasChecked
                   }}
+                  className="mb-8"
                 />
               }
             </li>
