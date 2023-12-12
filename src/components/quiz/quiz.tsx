@@ -31,6 +31,7 @@ const Quiz = () => {
   // Determine if the user has clicked the checked button.
   const [hasChecked, sethasChecked] = useState(false)
   console.log('selected questions : ', selectedQuestions)
+  console.log('score: ', totalScore)
   // Color variants for prefix symbols, default is white.
   const [colorVariant, setColorVariant] = useState<TColorVariants>('white')
 

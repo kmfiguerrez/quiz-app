@@ -85,7 +85,7 @@ const QuestionTSA = ({question, quizData, colorVariant, className}: TQuestionTSA
         {/* Show score */}
         {quizStatus === "checked" && !showErrorMessage &&
           <span className="text-blue-500">
-            {` - ${score} point`}
+            {` : ${score} point`}
           </span>
         }
       </p>
@@ -189,12 +189,24 @@ const Choice = ({choice, prefixSymbol, questionData, quizData}: TChoiceProps) =>
     >
 
       {/* Result symbol */}
-      {quizStatus === "checked" && hasSelectedAnswer && choice.isCorrect &&
-        <CheckIconSolid />        
+      {checkedAnswers && choice.isCorrect && 
+        <CheckIconSolid 
+          className={cn("",
+          {
+            "opacity-0": !selected
+          }
+          )} 
+        />        
       }
 
-      {quizStatus === "checked" && hasSelectedAnswer && !choice.isCorrect &&
-        <XiconSolid />        
+      {checkedAnswers && !choice.isCorrect &&
+        <XiconSolid
+          className={cn("",
+          {
+            "opacity-0": !selected
+          }
+          )} 
+        /> 
       }
 
 
@@ -203,7 +215,7 @@ const Choice = ({choice, prefixSymbol, questionData, quizData}: TChoiceProps) =>
         className={cn(
           "ms-1 me-3 rounded-full bg-gray-800 px-2 align-middle",
           {
-            "ms-2": quizStatus === "checked" && hasSelectedAnswer,
+            "ms-2": checkedAnswers,
             "outline outline-2 outline-offset-2 outline-white": selected && colorVariant,
             "text-pink-500": colorVariant === 'pink',
             "outline-pink-500": selected && colorVariant === 'pink',
